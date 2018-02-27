@@ -46,7 +46,7 @@ namespace KakaoTalkBot
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            AddFriend(AddNumberTextBox.Text, AddNumberTextBox.Text, "South Korea");
+            SendMessage(AddNumberTextBox.Text, "Text");
         }
 
         #endregion
@@ -191,6 +191,42 @@ namespace KakaoTalkBot
                 var (x, y, w, h) = Find(mat, "added_cancel.bmp");
                 x += w / 2;
                 y += h / 2;
+
+                MouseUtilities.MoveAndClick(x, y);
+            }
+        });
+
+        private void SendMessage(string phone, string text) => SafeAction(nameof(AddFriend), () =>
+        {
+            WindowsUtilities.ShowWindow("BlueStacks", 100);
+
+            using (var mat = MatUtilities.GetScreenshot())
+            {
+                var (x, y, w, h) = Find(mat, "search.bmp");
+                x += w / 2;
+                y += h / 2;
+
+                MouseUtilities.MoveAndClick(x, y);
+
+                Thread.Sleep(1000);
+
+                ClipboardUtilities.Paste(phone);
+
+                Thread.Sleep(1000);
+
+                y += (int)(2.5 * h);
+                MouseUtilities.MoveAndClick(x, y);
+            }
+
+            Thread.Sleep(1000);
+
+            using (var mat = MatUtilities.GetScreenshot())
+            {
+                var (x, y, w, h) = Find(mat, "free_chat.bmp");
+                x += w / 2;
+                y += h / 2;
+
+                Thread.Sleep(1000);
 
                 MouseUtilities.MoveAndClick(x, y);
             }
