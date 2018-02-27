@@ -1,8 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using Emgu.CV;
 using Emgu.CV.CvEnum;
+using KakaoTalkBot.Extensions;
+using Pranas;
 
 namespace KakaoTalkBot.Utilities
 {
@@ -10,14 +14,14 @@ namespace KakaoTalkBot.Utilities
     {
         public static Dictionary<string, Mat> LoadAnchors(string folder, string extension = "*.*")
         {
-            if (string.IsNullOrWhiteSpace(folder) || !Directory.Exists(folder))
+            if (String.IsNullOrWhiteSpace(folder) || !Directory.Exists(folder))
             {
                 return new Dictionary<string, Mat>();
             }
 
             return Directory
                 .EnumerateFiles(folder, extension)
-                .ToDictionary(Path.GetFileName, entry => new Mat(entry));
+                .ToDictionary(Path.GetFileName, entry => new Mat(entry).ToGray());
         }
 
         public static (int, int, int, int) Find(IInputArray mat, Mat obj)
@@ -30,6 +34,16 @@ namespace KakaoTalkBot.Utilities
                 var y = points[0].Y;
 
                 return (x, y, obj.Width, obj.Height);
+            }
+        }
+
+        public static Mat GetScreenshot()
+        {
+            using (var image = ScreenshotCapture.TakeScreenshot(true))
+            using (var bitmap = new Bitmap(image))
+            using (var mat = bitmap.ToMat())
+            {
+                return mat.ToGray();
             }
         }
     }

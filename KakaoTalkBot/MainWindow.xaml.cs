@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using Emgu.CV;
@@ -10,7 +11,7 @@ using Pranas;
 
 namespace KakaoTalkBot
 {
-    public partial class MainWindow
+    public partial class MainWindow : IDisposable
     {
         #region Properties
 
@@ -45,7 +46,7 @@ namespace KakaoTalkBot
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            Auth();
+            AddFriend("test", "2222", "Canada");
         }
 
         #endregion
@@ -54,12 +55,11 @@ namespace KakaoTalkBot
 
         #region Anchors
 
-        private void LoadAnchors() => SafeAction(() =>
+        private void LoadAnchors() => SafeAction(nameof(LoadAnchors), () =>
         {
-            Log("Loading anchors...");
             AnchorsDictionary = MatUtilities.LoadAnchors("anchors");
 
-            Log($"Anchors are loaded. Count: {AnchorsDictionary.Count}");
+            Log($"Anchors count: {AnchorsDictionary.Count}");
         });
 
         private Mat GetAnchor(string name) => AnchorsDictionary.TryGetValue(name, out var result) ? result : null;
@@ -71,11 +71,15 @@ namespace KakaoTalkBot
         private void Log(string text) => LogTextBox.Text += Environment.NewLine + text;
         private void Log(Exception exception) => Log($"Exception: {exception}");
 
-        private void SafeAction(Action action)
+        private void SafeAction(string name, Action action)
         {
             try
             {
+                Log($"Action \"{name}\" started...");
+
                 action?.Invoke();
+
+                Log($"Action \"{name}\" completed");
             }
             catch (Exception exception)
             {
@@ -89,25 +93,18 @@ namespace KakaoTalkBot
 
         private (int, int, int, int) Find(IInputArray mat, string name)
         {
-            using (var obj = GetAnchor(name).ToGray())
-            {
-                return MatUtilities.Find(mat, obj);
-            }
+            return MatUtilities.Find(mat, GetAnchor(name));
         }
 
         #endregion
 
         #region Actions
 
-        private void Auth() => SafeAction(() =>
+        private void Auth() => SafeAction(nameof(Auth), () =>
         {
-            Log("Auth started...");
-
             WindowsUtilities.ShowWindow("KakaoTalk", 100);
 
-            using (var image = ScreenshotCapture.TakeScreenshot(true))
-            using (var bitmap = new Bitmap(image))
-            using (var mat = bitmap.ToMat().ToGray())
+            using (var mat = MatUtilities.GetScreenshot())
             {
                 var (x, y, w, h) = Find(mat, "auth_logo.bmp");
                 x += w / 2;
@@ -121,13 +118,77 @@ namespace KakaoTalkBot
 
                 MouseUtilities.MoveAndClick(x, y);
             }
+        });
 
-            Log("Auth completed");
+        private void AddFriend(string name, string phone, string country) => SafeAction(nameof(AddFriend), () =>
+        {
+            WindowsUtilities.ShowWindow("BlueStacks", 100);
+
+            using (var mat = MatUtilities.GetScreenshot())
+            {
+                var (x, y, w, h) = Find(mat, "add_by_contacts.bmp");
+                x += w / 2;
+                y += h / 2;
+
+                MouseUtilities.MoveAndClick(x, y);
+            }
+
+            Thread.Sleep(500);
+
+            using (var mat = MatUtilities.GetScreenshot())
+            {
+                ClipboardUtilities.Paste(name);
+
+                Thread.Sleep(500);
+
+                var (x, y, w, h) = Find(mat, "add_by_contacts_phone_code_field.bmp");
+                x += w / 2;
+                y += h / 2;
+
+                Thread.Sleep(500);
+
+                MouseUtilities.MoveAndClick(x, y);
+            }
+
+            Thread.Sleep(500);
+
+            using (var mat = MatUtilities.GetScreenshot())
+            {
+                var (x, y, w, h) = Find(mat, "search_phone_code.bmp");
+                x += w / 2;
+                y += h / 2;
+
+                MouseUtilities.MoveAndClick(x, y);
+
+                ClipboardUtilities.Paste(country);
+
+                Thread.Sleep(500);
+
+                y += 12 * h;
+
+                MouseUtilities.MoveAndClick(x, y);
+
+                Thread.Sleep(500);
+
+                ClipboardUtilities.Paste(phone);
+            }
         });
 
         #endregion
 
         #endregion
 
+        #region IDisposable
+
+        public void Dispose()
+        {
+            foreach (var pair in AnchorsDictionary)
+            {
+                pair.Value.Dispose();
+            }
+            AnchorsDictionary.Clear();
+        }
+
+        #endregion
     }
 }

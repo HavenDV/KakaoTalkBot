@@ -131,6 +131,7 @@
     </PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>xcopy ..\..\..\anchors anchors /I /Y</PostBuildEvent>
+    <PostBuildEvent>rmdir /Q /S anchors &gt;nul 2&gt;&amp;1
+xcopy ..\..\..\anchors anchors /I /Y</PostBuildEvent>
   </PropertyGroup>
 </Project>
