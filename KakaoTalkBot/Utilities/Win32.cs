@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System;
+using System.Runtime.InteropServices;
 
 namespace KakaoTalkBot.Utilities
 {
@@ -14,5 +15,12 @@ namespace KakaoTalkBot.Utilities
         public const int MOUSEEVENTF_LEFTUP = 0x04;
         public const int MOUSEEVENTF_RIGHTDOWN = 0x08;
         public const int MOUSEEVENTF_RIGHTUP = 0x10;
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        public static extern bool ShowWindow(HandleRef hwnd, int nCmdShow);
+        [DllImport("user32.dll")]
+        public static extern bool SetForegroundWindow(HandleRef hwnd);
+        [DllImport("user32.dll")]
+        public static extern IntPtr SetFocus(HandleRef hwnd);
     }
 }

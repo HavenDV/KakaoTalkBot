@@ -69,8 +69,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Utilities\ClipboardUtilities.cs" />
+    <Compile Include="Utilities\KeyboardUtilities.cs" />
+    <Compile Include="Utilities\MatUtilities.cs" />
+    <Compile Include="Utilities\MouseUtilities.cs" />
     <Compile Include="Utilities\ScreenshotUtilities.cs" />
     <Compile Include="Utilities\Win32.cs" />
+    <Compile Include="Utilities\WindowsUtilities.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -121,4 +126,11 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\EMGU.CV.3.3.0.2824\build\Emgu.CV.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EMGU.CV.3.3.0.2824\build\Emgu.CV.targets'))" />
   </Target>
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent>xcopy ..\..\..\anchors anchors /I /Y</PostBuildEvent>
+  </PropertyGroup>
 </Project>
