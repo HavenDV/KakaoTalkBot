@@ -6,12 +6,14 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525" Loaded="Window_Loaded">
     <Grid>
-        <TextBox x:Name="EmailTextBox" HorizontalAlignment="Left" Height="23" Margin="125,21,0,0" TextWrapping="Wrap" Text="blabla@mail.com" VerticalAlignment="Top" Width="298"/>
-        <TextBox x:Name="PasswordTextBox" HorizontalAlignment="Left" Height="23" Margin="125,58,0,0" TextWrapping="Wrap" Text="12345678" VerticalAlignment="Top" Width="298" RenderTransformOrigin="0.194,-1.325"/>
+        <TextBox x:Name="EmailTextBox" HorizontalAlignment="Left" Height="23" Margin="105,7,0,0" TextWrapping="Wrap" Text="blabla@mail.com" VerticalAlignment="Top" Width="298"/>
+        <TextBox x:Name="PasswordTextBox" HorizontalAlignment="Left" Height="23" Margin="105,33,0,0" TextWrapping="Wrap" Text="12345678" VerticalAlignment="Top" Width="298" RenderTransformOrigin="0.194,-1.325"/>
         <Button Content="Go" HorizontalAlignment="Left" Margin="428,20,0,0" VerticalAlignment="Top" Width="79" RenderTransformOrigin="0.091,-0.805" Height="60" Click="Button_Click"/>
-        <Label Content="Email" HorizontalAlignment="Left" Margin="19,17,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.175,-0.576" Width="90"/>
-        <Label Content="Password" HorizontalAlignment="Left" Margin="19,55,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.175,-0.576" Width="90"/>
+        <Label Content="Email" HorizontalAlignment="Left" Margin="10,3,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.175,-0.576" Width="90"/>
+        <Label Content="Password" HorizontalAlignment="Left" Margin="10,29,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.175,-0.576" Width="90"/>
         <TextBox x:Name="LogTextBox" HorizontalAlignment="Left" Height="210" Margin="10,99,0,0" TextWrapping="Wrap" Text="Log:" VerticalAlignment="Top" Width="497"/>
+        <TextBox x:Name="AddNumberTextBox" HorizontalAlignment="Left" Height="23" Margin="105,59,0,0" TextWrapping="Wrap" Text="12345678" VerticalAlignment="Top" Width="298" RenderTransformOrigin="0.194,-1.325"/>
+        <Label Content="Add Number" HorizontalAlignment="Left" Margin="10,55,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.175,-0.576" Width="90"/>
 
     </Grid>
 </Window>

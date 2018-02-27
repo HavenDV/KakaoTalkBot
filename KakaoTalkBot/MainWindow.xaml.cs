@@ -46,7 +46,7 @@ namespace KakaoTalkBot
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            AddFriend("test", "2222", "Canada");
+            AddFriend(AddNumberTextBox.Text, AddNumberTextBox.Text, "South Korea");
         }
 
         #endregion
@@ -171,6 +171,28 @@ namespace KakaoTalkBot
                 Thread.Sleep(500);
 
                 ClipboardUtilities.Paste(phone);
+            }
+
+            Thread.Sleep(500);
+
+            using (var mat = MatUtilities.GetScreenshot())
+            {
+                var (x, y, w, h) = Find(mat, "add_ok.bmp");
+                x += w / 2;
+                y += h / 2;
+
+                MouseUtilities.MoveAndClick(x, y);
+            }
+
+            Thread.Sleep(1000);
+
+            using (var mat = MatUtilities.GetScreenshot())
+            {
+                var (x, y, w, h) = Find(mat, "added_cancel.bmp");
+                x += w / 2;
+                y += h / 2;
+
+                MouseUtilities.MoveAndClick(x, y);
             }
         });
 
