@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using Emgu.CV;
+using KakaoTalkBot.Actions;
 using KakaoTalkBot.Extensions;
 using KakaoTalkBot.Utilities;
 using Pranas;
@@ -14,6 +15,8 @@ namespace KakaoTalkBot
     public partial class MainWindow : IDisposable
     {
         #region Properties
+
+        private static string ProcessName { get; } = "Nox";
 
         private Dictionary<string, Mat> AnchorsDictionary { get; set; } = new Dictionary<string, Mat>();
 
@@ -44,9 +47,14 @@ namespace KakaoTalkBot
             LoadAnchors();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void AddNumberButton_Click(object sender, RoutedEventArgs e)
         {
-            SendMessage(AddNumberTextBox.Text, "Text");
+            AddFriend(NumberTextBox.Text, NumberTextBox.Text, "South Korea");
+        }
+
+        private void SendMessageButton_Click(object sender, RoutedEventArgs e)
+        {
+            SendMessage(NumberTextBox.Text, MessageTextBox.Text);
         }
 
         #endregion
@@ -58,7 +66,7 @@ namespace KakaoTalkBot
         private void LoadAnchors() => SafeAction(nameof(LoadAnchors), () =>
         {
             AnchorsDictionary = MatUtilities.LoadAnchors("anchors");
-
+            
             Log($"Anchors count: {AnchorsDictionary.Count}");
         });
 
@@ -96,11 +104,16 @@ namespace KakaoTalkBot
             return MatUtilities.Find(mat, GetAnchor(name));
         }
 
+        private bool IsExists(IInputArray mat, string name)
+        {
+            return MatUtilities.IsExists(mat, GetAnchor(name));
+        }
+
         #endregion
 
         #region Actions
 
-        private void Auth() => SafeAction(nameof(Auth), () =>
+        private void Auth(string email, string password) => SafeAction(nameof(Auth), () =>
         {
             WindowsUtilities.ShowWindow("KakaoTalk", 100);
 
@@ -110,10 +123,10 @@ namespace KakaoTalkBot
                 x += w / 2;
                 y += h + 20;
 
-                MouseUtilities.MoveAndClickAndPaste(x, y, EmailTextBox.Text, 50);
+                MouseUtilities.MoveAndClickAndPaste(x, y, email, 50);
                 y += 40;
 
-                MouseUtilities.MoveAndClickAndPaste(x, y, PasswordTextBox.Text, 50);
+                MouseUtilities.MoveAndClickAndPaste(x, y, password, 50);
                 y += 40;
 
                 MouseUtilities.MoveAndClick(x, y);
@@ -122,7 +135,7 @@ namespace KakaoTalkBot
 
         private void AddFriend(string name, string phone, string country) => SafeAction(nameof(AddFriend), () =>
         {
-            WindowsUtilities.ShowWindow("BlueStacks", 100);
+            WindowsUtilities.ShowWindow(ProcessName, 100);
 
             using (var mat = MatUtilities.GetScreenshot())
             {
@@ -198,37 +211,29 @@ namespace KakaoTalkBot
 
         private void SendMessage(string phone, string text) => SafeAction(nameof(AddFriend), () =>
         {
-            WindowsUtilities.ShowWindow("BlueStacks", 100);
-
-            using (var mat = MatUtilities.GetScreenshot())
+            var action = new SendMessageAction
             {
-                var (x, y, w, h) = Find(mat, "search.bmp");
-                x += w / 2;
-                y += h / 2;
+                Phone = phone,
+                Text = text,
+                AnchorsDictionary = AnchorsDictionary
+            };
 
-                MouseUtilities.MoveAndClick(x, y);
+            WindowsUtilities.ShowWindow(ProcessName, 100);
 
-                Thread.Sleep(1000);
-
-                ClipboardUtilities.Paste(phone);
-
-                Thread.Sleep(1000);
-
-                y += (int)(2.5 * h);
-                MouseUtilities.MoveAndClick(x, y);
-            }
-
-            Thread.Sleep(1000);
-
-            using (var mat = MatUtilities.GetScreenshot())
+            var isValid = true;
+            while (isValid && action.Action != SendMessageAction.CurrentAction.Completed)
             {
-                var (x, y, w, h) = Find(mat, "free_chat.bmp");
-                x += w / 2;
-                y += h / 2;
+                Log($"Current action: {action.Action:G}");
+                foreach (var (rect, mat) in MatUtilities.GetScreenshotOfProcess(ProcessName))
+                {
+                    MouseUtilities.GlobalOffset = (rect.X, rect.Y);
+                    using (mat)
+                    {
+                        isValid = action.OnAction(mat);
+                    }
+                }
 
                 Thread.Sleep(1000);
-
-                MouseUtilities.MoveAndClick(x, y);
             }
         });
 

@@ -37,14 +37,38 @@ namespace KakaoTalkBot.Utilities
             }
         }
 
-        public static Mat GetScreenshot()
+        public static bool IsExists(IInputArray mat, Mat obj)
         {
-            using (var image = ScreenshotCapture.TakeScreenshot(true))
-            using (var bitmap = new Bitmap(image))
+            using (var resultMat = new Mat())
+            {
+                CvInvoke.MatchTemplate(mat, obj, resultMat, TemplateMatchingType.Sqdiff);
+                resultMat.MinMax(out var values, out _, out var _, out _);
+                var value = values[0];
+
+                return value / resultMat.Rows / resultMat.Cols < 3.0;
+            }
+        }
+
+        public static Mat GetScreenshot() => ToMat(ScreenshotCapture.TakeScreenshot(true));
+
+        private static Mat ToMat(Image image)
+        {
+            using (image)
+            {
+                return ToMat(new Bitmap(image));
+            }
+        }
+
+        private static Mat ToMat(Bitmap bitmap)
+        {
+            using (bitmap)
             using (var mat = bitmap.ToMat())
             {
                 return mat.ToGray();
             }
         }
+
+        public static (Win32.Rect, Mat)[] GetScreenshotOfProcess(string name) =>
+            WindowsUtilities.GetScreenshotOfProcess(name).Select(i => (i.Item1, ToMat(i.Item2))).ToArray();
     }
 }

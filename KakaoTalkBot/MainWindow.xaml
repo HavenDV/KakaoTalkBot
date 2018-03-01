@@ -6,14 +6,13 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525" Loaded="Window_Loaded">
     <Grid>
-        <TextBox x:Name="EmailTextBox" HorizontalAlignment="Left" Height="23" Margin="105,7,0,0" TextWrapping="Wrap" Text="blabla@mail.com" VerticalAlignment="Top" Width="298"/>
-        <TextBox x:Name="PasswordTextBox" HorizontalAlignment="Left" Height="23" Margin="105,33,0,0" TextWrapping="Wrap" Text="12345678" VerticalAlignment="Top" Width="298" RenderTransformOrigin="0.194,-1.325"/>
-        <Button Content="Go" HorizontalAlignment="Left" Margin="428,20,0,0" VerticalAlignment="Top" Width="79" RenderTransformOrigin="0.091,-0.805" Height="60" Click="Button_Click"/>
-        <Label Content="Email" HorizontalAlignment="Left" Margin="10,3,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.175,-0.576" Width="90"/>
-        <Label Content="Password" HorizontalAlignment="Left" Margin="10,29,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.175,-0.576" Width="90"/>
-        <TextBox x:Name="LogTextBox" HorizontalAlignment="Left" Height="210" Margin="10,99,0,0" TextWrapping="Wrap" Text="Log:" VerticalAlignment="Top" Width="497"/>
-        <TextBox x:Name="AddNumberTextBox" HorizontalAlignment="Left" Height="23" Margin="105,59,0,0" TextWrapping="Wrap" Text="12345678" VerticalAlignment="Top" Width="298" RenderTransformOrigin="0.194,-1.325"/>
-        <Label Content="Add Number" HorizontalAlignment="Left" Margin="10,55,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.175,-0.576" Width="90"/>
+        <Button Content="Add Number" HorizontalAlignment="Left" Margin="407,13,0,0" VerticalAlignment="Top" Width="99" RenderTransformOrigin="0.091,-0.805" Height="26" Click="AddNumberButton_Click"/>
+        <Button Content="Send Message" HorizontalAlignment="Left" Margin="407,47,0,0" VerticalAlignment="Top" Width="99" RenderTransformOrigin="0.091,-0.805" Height="26" Click="SendMessageButton_Click"/>
+        <TextBox x:Name="LogTextBox" HorizontalAlignment="Left" Height="221" Margin="10,88,0,0" TextWrapping="Wrap" Text="Log:" VerticalAlignment="Top" Width="497"/>
+        <Label Content="Number" HorizontalAlignment="Left" Margin="9,13,0,0" VerticalAlignment="Top" Width="90"/>
+        <TextBox x:Name="NumberTextBox" Text="01037638972" HorizontalAlignment="Left" Height="27" Margin="104,13,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="298"/>
+        <Label Content="Message" HorizontalAlignment="Left" Margin="9,47,0,0" VerticalAlignment="Top" Width="90"/>
+        <TextBox x:Name="MessageTextBox" Text="Hello!" HorizontalAlignment="Left" Height="26" Margin="104,47,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="298"/>
 
     </Grid>
 </Window>

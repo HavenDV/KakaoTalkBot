@@ -69,6 +69,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Actions\SendMessageAction.cs" />
     <Compile Include="Utilities\ClipboardUtilities.cs" />
     <Compile Include="Utilities\KeyboardUtilities.cs" />
     <Compile Include="Utilities\MatUtilities.cs" />
