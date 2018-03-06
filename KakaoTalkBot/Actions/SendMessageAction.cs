@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Threading;
 using Emgu.CV;
 using KakaoTalkBot.Utilities;
 
 namespace KakaoTalkBot.Actions
 {
-    public class SendMessageAction
+    public class SendMessageAction : BaseAction
     {
         public enum CurrentAction
         {
@@ -19,26 +17,10 @@ namespace KakaoTalkBot.Actions
         }
 
         public CurrentAction Action { get; set; } = CurrentAction.Started;
+        public override string CurrentActionName => Action.ToString("G");
 
         public string Text { get; set; } = string.Empty;
         public string Phone { get; set; } = string.Empty;
-
-        public delegate void TextDelegate(string text);
-        public event TextDelegate NewLog;
-        private void Log(string text) => NewLog?.Invoke(text);
-
-        public Dictionary<string, Mat> AnchorsDictionary { get; set; } = new Dictionary<string, Mat>();
-        private Mat GetAnchor(string name) => AnchorsDictionary.TryGetValue(name, out var result) ? result : null;
-
-        private (int, int, int, int) Find(IInputArray mat, string name)
-        {
-            return MatUtilities.Find(mat, GetAnchor(name));
-        }
-
-        private bool IsExists(IInputArray mat, string name)
-        {
-            return MatUtilities.IsExists(mat, GetAnchor(name));
-        }
 
         private void Search(IInputArray mat)
         {
@@ -53,13 +35,13 @@ namespace KakaoTalkBot.Actions
 
             MouseUtilities.MoveAndClick(x, y);
 
-            Thread.Sleep(1000);
+            Sleep(1000);
 
             ClipboardUtilities.Paste(Phone);
 
-            Thread.Sleep(1000);
+            Sleep(1000);
 
-            y += (int)(2 * h);
+            y += (2 * h);
             MouseUtilities.MoveAndClick(x, y);
         }
 
@@ -74,14 +56,12 @@ namespace KakaoTalkBot.Actions
             x += w / 2;
             y += h / 2;
 
-            Thread.Sleep(1000);
+            Sleep(1000);
 
             MouseUtilities.MoveAndClick(x, y);
-
-            Action = CurrentAction.Chat;
         }
 
-        public bool OnAction(IInputArray mat)
+        public override bool OnAction(IInputArray mat)
         {
             switch (Action)
             {
@@ -92,10 +72,12 @@ namespace KakaoTalkBot.Actions
 
                 case CurrentAction.Profile:
                     Chat(mat);
+                    Action = CurrentAction.Chat;
                     return true;
 
                 case CurrentAction.Chat:
                     Action = CurrentAction.Completed;
+                    IsCompleted = true;
                     return true;
 
                 case CurrentAction.Unknown:
