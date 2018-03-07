@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading;
 using Emgu.CV;
 using KakaoTalkBot.Utilities;
 
@@ -27,180 +26,144 @@ namespace KakaoTalkBot.Actions
         public string Phone { get; set; } = string.Empty;
         public string Country { get; set; } = string.Empty;
 
-        private void AddByContacts(IInputArray mat)
+        private void AddByContacts()
         {
-            if (!IsExists(mat, "add_by_contacts_nox.bmp"))
+            if (!IsExists("add_by_contacts_nox.bmp"))
             {
                 return;
             }
 
-            var (x, y, w, h) = Find(mat, "add_by_contacts_nox.bmp");
-            x += w / 2;
-            y += 3 * h / 4;
-
-            MouseUtilities.MoveAndClick(x, y);
-
-            Thread.Sleep(500);
+            var (x, y, w, h) = Find("add_by_contacts_nox.bmp");
+            MoveAndClick(x, y, w / 2, 3 * h / 4);
         }
 
-        private void CountryCode(IInputArray mat)
+        private void CountryCode()
         {
-            if (!IsExists(mat, "add_by_contacts_phone_code_nox.bmp"))
+            if (!IsExists("add_by_contacts_phone_code_nox.bmp"))
             {
                 return;
             }
 
-            ClipboardUtilities.Paste(Name);
+            Paste(Name, 500);
 
-            Thread.Sleep(500);
-
-            var (x, y, w, h) = Find(mat, "add_by_contacts_phone_code_nox.bmp");
-            x += w / 2;
-            y += h / 2;
-
-            Thread.Sleep(500);
-
-            MouseUtilities.MoveAndClick(x, y);
-
-            Thread.Sleep(500);
+            var (x, y, w, h) = Find("add_by_contacts_phone_code_nox.bmp");
+            MoveAndClick(x, y, w / 2, h / 2);
         }
 
-        private void SearchCountryCode(IInputArray mat)
+        private void SearchCountryCode()
         {
-            if (!IsExists(mat, "search_phone_code_nox.bmp"))
+            if (!IsExists("search_phone_code_nox.bmp"))
             {
                 return;
             }
 
-            var (x, y, w, h) = Find(mat, "search_phone_code_nox.bmp");
+            var (x, y, w, h) = Find("search_phone_code_nox.bmp");
+
             x += w / 2;
             y += h / 2;
-
             MouseUtilities.MoveAndClick(x, y);
 
-            ClipboardUtilities.Paste(Country);
-
-            Thread.Sleep(1500);
+            Paste(Country, 500);
 
             y += 6 * h;
-
             MouseUtilities.MoveAndClick(x, y);
 
-            Thread.Sleep(1500);
+            Sleep(500);
 
-            ClipboardUtilities.Paste(Phone);
-
-            Thread.Sleep(1500);
+            Paste(Phone, 500);
         }
 
-        private void AddOk(IInputArray mat)
+        private void AddOk()
         {
-            if (!IsExists(mat, "add_ok_nox.bmp"))
+            if (!IsExists("add_ok_nox.bmp"))
             {
                 return;
             }
 
-            var (x, y, w, h) = Find(mat, "add_ok_nox.bmp");
-            x += w / 2;
-            y += h / 2;
+            var (x, y, w, h) = Find("add_ok_nox.bmp");
+            MoveAndClick(x, y, w / 2, h / 2);
 
-            MouseUtilities.MoveAndClick(x, y);
-
-            Thread.Sleep(500);
+            Sleep(3000);
         }
 
-        private void AddedCancel(IInputArray mat)
+        private void AddedCancel()
         {
-            if (!IsExists(mat, "added_cancel_nox.bmp"))
+            if (!IsExists("added_cancel_nox.bmp"))
             {
                 return;
             }
 
-            var (x, y, w, h) = Find(mat, "added_cancel_nox.bmp");
-            x += w / 4;
-            y += h / 2;
-
-            MouseUtilities.MoveAndClick(x, y);
-
-            Thread.Sleep(500);
+            var (x, y, w, h) = Find("added_cancel_nox.bmp");
+            MoveAndClick(x, y, w / 4, h / 2);
         }
 
-        private void AlreadyAdded(IInputArray mat)
+        private void AlreadyAdded()
         {
-            if (!IsExists(mat, "already_added_ok.bmp"))
+            if (!IsExists("already_added_ok.bmp") && !IsExists("add_ok_nox.bmp"))
             {
                 Action = CurrentAction.Started;
                 return;
             }
 
-            var (x, y, w, h) = Find(mat, "already_added_ok.bmp");
-            x += w / 2;
-            y += h / 2;
-
-            MouseUtilities.MoveAndClick(x, y);
-
-            Thread.Sleep(500);
+            var (x, y, w, h) = Find("already_added_ok.bmp");
+            MoveAndClick(x, y, w / 2, h / 2);
 
             Action = CurrentAction.NeedBack;
         }
 
-        private void NeedBack(IInputArray mat)
+        private void NeedBack()
         {
-            if (!IsExists(mat, "back_nox.bmp"))
+            if (!IsExists("back_nox.bmp"))
             {
                 return;
             }
 
-            var (x, y, w, h) = Find(mat, "back_nox.bmp");
-            x += w / 2;
-            y += h / 2;
-
-            MouseUtilities.MoveAndClick(x, y);
-
-            Thread.Sleep(500);
+            var (x, y, w, h) = Find("back_nox.bmp");
+            MoveAndClick(x, y, w / 2, h / 2);
         }
 
-        public override bool OnAction(IInputArray mat)
+        protected override bool OnActionInternal(IInputArray mat)
         {
             switch (Action)
             {
                 case CurrentAction.Started:
-                    AddByContacts(mat);
+                    AddByContacts();
                     Action = CurrentAction.AddByContacts;
                     return true;
 
                 case CurrentAction.AddByContacts:
-                    CountryCode(mat);
+                    CountryCode();
                     Action = CurrentAction.CountryCode;
                     return true;
 
                 case CurrentAction.CountryCode:
-                    SearchCountryCode(mat);
+                    SearchCountryCode();
                     Action = CurrentAction.SearchCountryCode;
                     return true;
 
                 case CurrentAction.SearchCountryCode:
-                    AddOk(mat);
+                    AddOk();
                     Action = CurrentAction.AddOk;
                     return true;
 
                 case CurrentAction.AddOk:
-                    AddOk(mat);
+                    AddOk();
                     Action = CurrentAction.AddedCancel;
                     return true;
 
                 case CurrentAction.AddedCancel:
-                    AddedCancel(mat);
+                    AddedCancel();
                     Action = CurrentAction.CheckAlreadyAdded;
                     return true;
 
                 case CurrentAction.CheckAlreadyAdded:
-                    AlreadyAdded(mat);
+                    AlreadyAdded();
                     IsCompleted = Action == CurrentAction.Started;
                     return true;
 
                 case CurrentAction.NeedBack:
-                    NeedBack(mat);
+                    NeedBack();
+                    Action = CurrentAction.Started;
                     IsCompleted = true;
                     return true;
 

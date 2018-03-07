@@ -42,6 +42,9 @@
     <Reference Include="Emgu.CV.World, Version=3.3.0.2824, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\EMGU.CV.3.3.0.2824\lib\net35\Emgu.CV.World.dll</HintPath>
     </Reference>
+    <Reference Include="EPPlus, Version=4.1.1.0, Culture=neutral, PublicKeyToken=ea159fdaa78159a1, processorArchitecture=MSIL">
+      <HintPath>..\packages\EPPlus.4.1.1\lib\net40\EPPlus.dll</HintPath>
+    </Reference>
     <Reference Include="Pranas.ScreenshotCapture, Version=1.0.6.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Pranas.ScreenshotCapture.1.0.11\lib\net40\Pranas.ScreenshotCapture.dll</HintPath>
     </Reference>
@@ -73,7 +76,9 @@
     <Compile Include="Actions\BaseAction.cs" />
     <Compile Include="Actions\AddFriendAction.cs" />
     <Compile Include="Actions\SendMessageAction.cs" />
+    <Compile Include="Extensions\UIElementExtensions.cs" />
     <Compile Include="Utilities\ClipboardUtilities.cs" />
+    <Compile Include="Utilities\Hook.cs" />
     <Compile Include="Utilities\KeyboardUtilities.cs" />
     <Compile Include="Utilities\MatUtilities.cs" />
     <Compile Include="Utilities\MouseUtilities.cs" />

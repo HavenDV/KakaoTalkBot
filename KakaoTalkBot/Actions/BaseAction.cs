@@ -1,4 +1,5 @@
-﻿using Emgu.CV;
+﻿using System;
+using Emgu.CV;
 using KakaoTalkBot.Utilities;
 using System.Collections.Generic;
 using System.Threading;
@@ -7,6 +8,7 @@ namespace KakaoTalkBot.Actions
 {
     public abstract class BaseAction : IAction
     {
+        public IInputArray Mat { get; set; }
         public bool IsCompleted { get; set; }
 
         public delegate void TextDelegate(string text);
@@ -14,21 +16,43 @@ namespace KakaoTalkBot.Actions
         protected void Log(string text) => NewLog?.Invoke(text);
 
         public Dictionary<string, Mat> AnchorsDictionary { get; set; } = new Dictionary<string, Mat>();
-        protected Mat GetAnchor(string name) => AnchorsDictionary.TryGetValue(name, out var result) ? result : null;
+        protected Mat GetAnchor(string name) => AnchorsDictionary.TryGetValue(name, out var result)
+            ? result : throw new Exception($"Anchor {name} is not found");
 
-        protected (int, int, int, int) Find(IInputArray mat, string name)
+        protected (int, int, int, int) Find(string name)
         {
-            return MatUtilities.Find(mat, GetAnchor(name));
+            return MatUtilities.Find(Mat, GetAnchor(name));
         }
 
-        protected bool IsExists(IInputArray mat, string name)
+        protected bool IsExists(string name)
         {
-            return MatUtilities.IsExists(mat, GetAnchor(name));
+            return MatUtilities.IsExists(Mat, GetAnchor(name));
         }
 
-        protected void Sleep(int millisecondsTimeout) => Thread.Sleep(millisecondsTimeout);
+        protected static void Sleep(int millisecondsTimeout) => Thread.Sleep(millisecondsTimeout);
+        protected static void MoveAndClick(int x, int y, int dx = 0, int dy = 0) => MouseUtilities.MoveAndClick(x + dx, y + dy);
 
-        public abstract bool OnAction(IInputArray mat);
+        protected static void Paste(string text, int sleep)
+        {
+            ClipboardUtilities.Paste(text);
+            Sleep(sleep);
+        }
+
+        public bool OnAction(IInputArray mat)
+        {
+            try
+            {
+                Mat = mat;
+
+                return OnActionInternal(mat);
+            }
+            finally
+            {
+                Sleep(500);
+            }
+        }
+
+        protected abstract bool OnActionInternal(IInputArray mat);
         public abstract string CurrentActionName { get; }
     }
 }

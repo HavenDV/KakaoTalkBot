@@ -12,7 +12,8 @@ namespace KakaoTalkBot.Actions
             Search,
             Profile,
             Chat,
-            Completed,
+            SendMessagePrepare,
+            SendMessage,
             Unknown
         }
 
@@ -22,14 +23,14 @@ namespace KakaoTalkBot.Actions
         public string Text { get; set; } = string.Empty;
         public string Phone { get; set; } = string.Empty;
 
-        private void Search(IInputArray mat)
+        private void Search()
         {
-            if (!IsExists(mat, "nox_search.bmp"))
+            if (!IsExists("nox_search.bmp"))
             {
                 return;
             }
 
-            var (x, y, w, h) = Find(mat, "nox_search.bmp");
+            var (x, y, w, h) = Find("nox_search.bmp");
             x += w / 2;
             y += h / 2;
 
@@ -37,46 +38,80 @@ namespace KakaoTalkBot.Actions
 
             Sleep(1000);
 
-            ClipboardUtilities.Paste(Phone);
+            Paste(Phone, 500);
 
-            Sleep(1000);
-
-            y += (2 * h);
+            y += 2 * h;
             MouseUtilities.MoveAndClick(x, y);
         }
 
-        private void Chat(IInputArray mat)
+        private void Chat()
         {
-            if (!IsExists(mat, "nox_free_chat.bmp"))
+            if (!IsExists("nox_free_chat.bmp"))
             {
                 return;
             }
 
-            var (x, y, w, h) = Find(mat, "nox_free_chat.bmp");
-            x += w / 2;
-            y += h / 2;
-
-            Sleep(1000);
-
-            MouseUtilities.MoveAndClick(x, y);
+            var (x, y, w, h) = Find("nox_free_chat.bmp");
+            MoveAndClick(x, y, w / 2, h / 2);
         }
 
-        public override bool OnAction(IInputArray mat)
+        private void SendMessagePrepare()
+        {
+            if (!IsExists("chat_field.bmp"))
+            {
+                return;
+            }
+
+            var (x, y, w, h) = Find("chat_field.bmp");
+            MoveAndClick(x, y, w / 2, h / 2);
+
+            Sleep(500);
+
+            Paste(Text, 500);
+        }
+
+        private void SendMessage()
+        {
+            if (!IsExists("send_message_back_nox.bmp"))
+            {
+                return;
+            }
+
+            var (x, y, w, h) = Find("send_message_nox.bmp");
+            MoveAndClick(x, y, w / 2, h / 2);
+
+            Sleep(500);
+
+            (x, y, w, h) = Find("send_message_back_nox.bmp");
+            MoveAndClick(x, y, w / 2, h / 2);
+        }
+
+        protected override bool OnActionInternal(IInputArray mat)
         {
             switch (Action)
             {
                 case CurrentAction.Started:
-                    Search(mat);
+                    Search();
                     Action = CurrentAction.Profile;
                     return true;
 
                 case CurrentAction.Profile:
-                    Chat(mat);
+                    Chat();
                     Action = CurrentAction.Chat;
                     return true;
 
                 case CurrentAction.Chat:
-                    Action = CurrentAction.Completed;
+                    SendMessagePrepare();
+                    Action = CurrentAction.SendMessagePrepare;
+                    return true;
+
+                case CurrentAction.SendMessagePrepare:
+                    SendMessage();
+                    Action = CurrentAction.SendMessage;
+                    return true;
+
+                case CurrentAction.SendMessage:
+                    Action = CurrentAction.Started;
                     IsCompleted = true;
                     return true;
 
