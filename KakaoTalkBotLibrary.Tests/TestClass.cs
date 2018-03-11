@@ -36,9 +36,10 @@ namespace KakaoTalkBotLibrary.Tests
             var anchor = GetAnchor(anchorName, Anchors);
             foreach (var pair in GetImagesWithPrefix(prefix, Screenshots))
             {
-                if (!MatUtilities.IsExists(pair.Value, anchor))
+                var result = MatUtilities.IsExistsEx(pair.Value, anchor);
+                if (!result.isExists)
                 {
-                    Assert.Warn($"!MatUtilities.IsExists: Anchor: {anchorName}. Image: {pair.Key}. Threshold: {MatUtilities.IsExistsThreshold}");
+                    Assert.Warn($"!MatUtilities.IsExists: Anchor: {anchorName}. Image: {pair.Key}. Threshold: {result.threshold}. Edge threshold: {MatUtilities.IsExistsThreshold}");
                 }
             }
         }

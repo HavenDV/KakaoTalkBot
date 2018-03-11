@@ -37,7 +37,7 @@ namespace KakaoTalkBotLibrary.Utilities
             }
         }
 
-        public static bool IsExists(IInputArray mat, Mat obj)
+        public static (double threshold, bool isExists) IsExistsEx(IInputArray mat, Mat obj)
         {
             using (var resultMat = new Mat())
             {
@@ -45,9 +45,28 @@ namespace KakaoTalkBotLibrary.Utilities
                 resultMat.MinMax(out var values, out _, out var _, out _);
                 var value = values[0];
 
-                return value / resultMat.Rows / resultMat.Cols < IsExistsThreshold;
+                var threshold = value / resultMat.Rows / resultMat.Cols;
+                return (threshold, threshold < IsExistsThreshold);
             }
         }
+
+        public static (double threshold, bool isExists) IsExistsMultuEx(Mat mat, Mat obj)
+        {
+            var results = new List<(double, bool)>();
+            for (var i = 1; i < mat.Width; i+= 100)
+            {
+                //for (var j = 1; j < mat.Height; j++)
+                {
+                    var resizedObj = obj.Resize(new Size(i, obj.Height));
+
+                    //results.Add(IsExistsEx(mat, resizedObj));
+                }
+            }
+
+            return results.OrderBy(i => i.Item1).FirstOrDefault();
+        }
+
+        public static bool IsExists(IInputArray mat, Mat obj) => IsExistsEx(mat, obj).Item2;
 
         public static Mat ToMat(Image image)
         {
