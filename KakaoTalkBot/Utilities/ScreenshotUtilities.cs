@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Emgu.CV;
 
 namespace KakaoTalkBot.Utilities
@@ -28,5 +29,11 @@ namespace KakaoTalkBot.Utilities
 
         public static bool IsEquals(double difference) => Math.Abs(difference) < Epsilon;
         public static bool IsEquals(Mat mat1, Mat mat2, Mat mask = null) => IsEquals(GetDifference(mat1, mat2, mask));
+
+        public static (Win32.Rect, Mat)[] GetScreenshotOfProcess(string name) =>
+            WindowsUtilities
+                .GetScreenshotOfProcess(name)
+                .Select(i => (i.Item1, KakaoTalkBotLibrary.Utilities.MatUtilities.ToMat(i.Item2)))
+                .ToArray();
     }
 }

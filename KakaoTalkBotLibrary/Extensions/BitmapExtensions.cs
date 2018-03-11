@@ -3,7 +3,7 @@ using System.Drawing.Imaging;
 using Emgu.CV;
 using Emgu.CV.CvEnum;
 
-namespace KakaoTalkBot.Extensions
+namespace KakaoTalkBotLibrary.Extensions
 {
     public static class BitmapExtensions
     {

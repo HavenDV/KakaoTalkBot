@@ -11,6 +11,8 @@ using Emgu.CV;
 using KakaoTalkBot.Actions;
 using KakaoTalkBot.Extensions;
 using KakaoTalkBot.Utilities;
+using KakaoTalkBotLibrary.Extensions;
+using KakaoTalkBotLibrary.Utilities;
 using Microsoft.Win32;
 using OfficeOpenXml;
 using Pranas;
@@ -211,7 +213,7 @@ namespace KakaoTalkBot
             while (isValid && !action.IsCompleted && IsStarted)
             {
                 Log($"Current action: {action.CurrentActionName}");
-                foreach (var (rect, mat) in MatUtilities.GetScreenshotOfProcess(ProcessName))
+                foreach (var (rect, mat) in ScreenshotUtilities.GetScreenshotOfProcess(ProcessName))
                 {
                     MouseUtilities.GlobalOffset = (rect.X, rect.Y);
                     using (mat)

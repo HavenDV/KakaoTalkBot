@@ -1,8 +1,9 @@
 ﻿using System;
 using Emgu.CV;
-using KakaoTalkBot.Utilities;
 using System.Collections.Generic;
 using System.Threading;
+using KakaoTalkBot.Utilities;
+using MatUtilities = KakaoTalkBotLibrary.Utilities.MatUtilities;
 
 namespace KakaoTalkBot.Actions
 {

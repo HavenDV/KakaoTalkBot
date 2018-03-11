@@ -5,10 +5,9 @@ using System.IO;
 using System.Linq;
 using Emgu.CV;
 using Emgu.CV.CvEnum;
-using KakaoTalkBot.Extensions;
-using Pranas;
+using KakaoTalkBotLibrary.Extensions;
 
-namespace KakaoTalkBot.Utilities
+namespace KakaoTalkBotLibrary.Utilities
 {
     public static class MatUtilities
     {
@@ -49,9 +48,7 @@ namespace KakaoTalkBot.Utilities
             }
         }
 
-        public static Mat GetScreenshot() => ToMat(ScreenshotCapture.TakeScreenshot(true));
-
-        private static Mat ToMat(Image image)
+        public static Mat ToMat(Image image)
         {
             using (image)
             {
@@ -59,7 +56,7 @@ namespace KakaoTalkBot.Utilities
             }
         }
 
-        private static Mat ToMat(Bitmap bitmap)
+        public static Mat ToMat(Bitmap bitmap)
         {
             using (bitmap)
             using (var mat = bitmap.ToMat())
@@ -67,8 +64,5 @@ namespace KakaoTalkBot.Utilities
                 return mat.ToGray();
             }
         }
-
-        public static (Win32.Rect, Mat)[] GetScreenshotOfProcess(string name) =>
-            WindowsUtilities.GetScreenshotOfProcess(name).Select(i => (i.Item1, ToMat(i.Item2))).ToArray();
     }
 }
