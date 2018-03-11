@@ -20,7 +20,7 @@ namespace KakaoTalkBot.Utilities
             }
 
             var ptr = new HandleRef(null, process.MainWindowHandle);
-            const int swShow = 5;
+            //const int swShow = 5;
             const int swRestore = 9;
             Win32.ShowWindow(ptr, swRestore);
             Win32.SetForegroundWindow(ptr);

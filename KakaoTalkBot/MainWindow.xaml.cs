@@ -139,7 +139,7 @@ namespace KakaoTalkBot
 
         private void LoadAnchors() => SafeAction(nameof(LoadAnchors), () =>
         {
-            AnchorsDictionary = MatUtilities.LoadAnchors("anchors");
+            AnchorsDictionary = MatUtilities.LoadImages("anchors");
 
             Log($"Anchors count: {AnchorsDictionary.Count}");
         });

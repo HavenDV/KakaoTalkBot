@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -11,9 +10,11 @@ namespace KakaoTalkBotLibrary.Utilities
 {
     public static class MatUtilities
     {
-        public static Dictionary<string, Mat> LoadAnchors(string folder, string extension = "*.*")
+        public static double IsExistsThreshold { get; } = 3.0;
+
+        public static Dictionary<string, Mat> LoadImages(string folder, string extension = "*.*")
         {
-            if (String.IsNullOrWhiteSpace(folder) || !Directory.Exists(folder))
+            if (string.IsNullOrWhiteSpace(folder) || !Directory.Exists(folder))
             {
                 return new Dictionary<string, Mat>();
             }
@@ -44,7 +45,7 @@ namespace KakaoTalkBotLibrary.Utilities
                 resultMat.MinMax(out var values, out _, out var _, out _);
                 var value = values[0];
 
-                return value / resultMat.Rows / resultMat.Cols < 3.0;
+                return value / resultMat.Rows / resultMat.Cols < IsExistsThreshold;
             }
         }
 
