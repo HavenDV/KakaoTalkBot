@@ -6,6 +6,7 @@ using System.Linq;
 using System.Windows;
 using AnchorsCreator.Extensions;
 using AnchorsCreator.Properties;
+using AnchorsCreator.Utilities;
 using KakaoTalkBotLibrary.Utilities;
 using Ookii.Dialogs.Wpf;
 using Point = System.Windows.Point;
@@ -19,8 +20,12 @@ namespace AnchorsCreator
         private bool MouseIsDown { get; set; }
         private Point MouseDownPosition { get; set; }
 
-        private Anchors Anchors { get; } = new Anchors();
+        private Screens Screens { get; } = new Screens();
 
+        private Screen CurrentScreen { get; set; }
+        private Anchor CurrentAnchor { get; set; }
+
+        public ObservableCollection<Screen> ScreensCollection { get; } = new ObservableCollection<Screen>();
         public ObservableCollection<Anchor> AnchorsCollection { get; } = new ObservableCollection<Anchor>();
 
         #endregion
@@ -32,6 +37,7 @@ namespace AnchorsCreator
             InitializeComponent();
 
             Load(Settings.Default.CurrentDirectory);
+            UpdateScreens();
         }
 
         #endregion
@@ -62,33 +68,68 @@ namespace AnchorsCreator
             Load(Settings.Default.CurrentDirectory);
         }
 
-        private void UpdateAnchors()
+        private void UpdateScreens()
         {
-            AnchorsCollection.Clear();
-            if (!Anchors.Any())
+            ScreensCollection.Clear();
+            if (!Screens.Any())
             {
                 return;
             }
 
-            foreach (var pair in Anchors)
+            foreach (var screen in Screens)
             {
-                AnchorsCollection.Add(pair.Value);
+                ScreensCollection.Add(screen);
             }
 
-            AnchorsListBox.SelectedIndex = 0;
+            ScreensListBox.SelectedIndex = 0;
         }
 
-        private void CloseImageButton_Click(object sender, RoutedEventArgs e)
+        private void UpdateAnchors(int index = -1)
         {
-            SavePanel.Visibility = Visibility.Hidden;
-            CloseImageButton.Visibility = Visibility.Hidden;
-            Image.Source = null;
-            SelectionRectangle.Visibility = Visibility.Hidden;
+            AnchorsCollection.Clear();
+            if (!CurrentScreen.Anchors.Any())
+            {
+                return;
+            }
+
+            foreach (var anchor in CurrentScreen.Anchors)
+            {
+                AnchorsCollection.Add(anchor);
+            }
+
+            AnchorsListBox.SelectedIndex = index;
+        }
+
+        private void AddButton_Click(object sender, RoutedEventArgs e)
+        {
+            CurrentScreen.Anchors.Add(new Anchor
+            {
+                Name = $"NewAnchor_{new Random().Next()}"
+            });
+            UpdateAnchors(CurrentScreen.Anchors.Count - 1);
+        }
+
+        private void DeleteButton_Click(object sender, RoutedEventArgs e)
+        {
+            var index = AnchorsListBox.SelectedIndex;
+            if (index < 0)
+            {
+                return;
+            }
+
+            var anchor = AnchorsCollection[index];
+            if (!MessageBoxUtilities.Question($"Are you sure delete anchor: {anchor.Name}?"))
+            {
+                return;
+            }
+
+            AnchorsCollection.Remove(anchor);
+            CurrentScreen.Anchors.Remove(anchor);
         }
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            Anchors.Save(Settings.Default.CurrentDirectory);
+            Screens.Save(Settings.Default.CurrentDirectory);
         }
 
         private void Grid_MouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -119,15 +160,18 @@ namespace AnchorsCreator
             ChangeSelectionRectangle(MouseDownPosition, e.GetPosition(ImageGrid));
         }
 
+        private void ScreensListBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            var index = ScreensListBox.SelectedIndex;
+
+            ShowScreen(index < 0 ? null : Screens.ElementAt(index));
+        }
+
         private void AnchorsListBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
             var index = AnchorsListBox.SelectedIndex;
-            if (index < 0)
-            {
-                return;
-            }
 
-            ShowAnchor(Anchors.ElementAt(index).Value);
+            ShowAnchor(index < 0 ? null : CurrentScreen.Anchors.ElementAt(index));
         }
 
         #endregion
@@ -141,31 +185,32 @@ namespace AnchorsCreator
                 return;
             }
 
-            Anchors.Load(directory);
-            UpdateAnchors();
-
-            if (!Anchors.Any())
-            {
-                return;
-            }
-
-            SavePanel.Visibility = Visibility.Visible;
+            Screens.Load(directory);
+            UpdateScreens();
         }
 
-        private void ShowAnchor(Anchor anchor)
+        private void ShowScreen(Screen screen)
         {
-            var image = anchor?.Mat?.Bitmap?.ToBitmapImage();
+            CurrentScreen = screen;
+
+            var image = screen?.Mat?.Bitmap?.ToBitmapImage();
             if (image == null)
             {
                 return;
             }
 
-            CloseImageButton.Visibility = Visibility.Visible;
             Image.Source = image;
             ImageGrid.Width = image.Width;
             ImageGrid.Height = image.Height;
 
-            var rectangle = Rectangle.Empty;
+            UpdateAnchors(0);
+        }
+
+        private void ShowAnchor(Anchor anchor)
+        {
+            CurrentAnchor = anchor;
+
+            var rectangle = anchor?.Rectangle ?? Rectangle.Empty;
             if (rectangle.IsEmpty)
             {
                 SelectionRectangle.Visibility = Visibility.Hidden;
@@ -182,6 +227,14 @@ namespace AnchorsCreator
             SelectionRectangle.Margin = new Thickness(topLeftPoint.X, topLeftPoint.Y, topLeftPoint.X, topLeftPoint.Y);
             SelectionRectangle.Width = Math.Abs(point2.X - point1.X);
             SelectionRectangle.Height = Math.Abs(point2.Y - point1.Y);
+
+            if (CurrentAnchor == null)
+            {
+                return;
+            }
+
+            CurrentAnchor.Rectangle = new Rectangle((int)SelectionRectangle.Margin.Left, (int)SelectionRectangle.Margin.Top,
+                (int)SelectionRectangle.Width, (int)SelectionRectangle.Height);
         }
 
         private void ChangeSelectionRectangle(Rectangle rectangle) => ChangeSelectionRectangle(

@@ -19,34 +19,44 @@
                     <Rectangle x:Name="SelectionRectangle" Stroke="Red" StrokeThickness="1"/>
                 </Canvas>
             </Grid>
-            <Grid Margin="0,0,0,10">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="30*"/>
-                    <RowDefinition Height="30*"/>
-                    <RowDefinition Height="30*"/>
-                    <RowDefinition Height="10*"/>
-                </Grid.RowDefinitions>
-                <Grid x:Name="SavePanel" Grid.Row="3" Visibility="Hidden">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="41*" />
-                        <ColumnDefinition Width="18*" />
-                        <ColumnDefinition Width="41*" />
-                    </Grid.ColumnDefinitions>
-                    <Button Content="Save" Grid.Column="1" Click="SaveButton_Click"/>
-                </Grid>
-            </Grid>
-            <Button x:Name="CloseImageButton" Visibility="Hidden" Content="X" HorizontalAlignment="Right" VerticalAlignment="Top" Height="23" Width="23" Click="CloseImageButton_Click"/>
         </Grid>
         <TabControl Grid.Row="1">
-            <TabItem Header="Anchors">
+            <TabItem Header="Screens">
                 <Grid Background="#FFE5E5E5">
-                    <ListBox x:Name="AnchorsListBox" SelectionMode="Extended" ItemsSource="{Binding AnchorsCollection}" SelectionChanged="AnchorsListBox_SelectionChanged">
+                    <ListBox x:Name="ScreensListBox" SelectionMode="Extended" ItemsSource="{Binding ScreensCollection}" SelectionChanged="ScreensListBox_SelectionChanged">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Name}"/>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
                     </ListBox>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Anchors">
+                <Grid Background="#FFE5E5E5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="20"/>
+                    </Grid.RowDefinitions>
+                    <ListBox Grid.Row="0" x:Name="AnchorsListBox" SelectionMode="Extended" ItemsSource="{Binding AnchorsCollection}" SelectionChanged="AnchorsListBox_SelectionChanged">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBox Text="{Binding Name}"/>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="25*" />
+                            <ColumnDefinition Width="25*" />
+                            <ColumnDefinition Width="25*" />
+                            <ColumnDefinition Width="25*" />
+                        </Grid.ColumnDefinitions>
+                        <Button Content="Add" Grid.Column="0" Click="AddButton_Click"/>
+                        <Button Content="Delete" Grid.Column="1" Click="DeleteButton_Click"/>
+                        <Button Content="Edit" Grid.Column="2"/>
+                        <Button Content="Save" Grid.Column="3" Click="SaveButton_Click"/>
+                    </Grid>
                 </Grid>
             </TabItem>
             <TabItem Header="Settings">
