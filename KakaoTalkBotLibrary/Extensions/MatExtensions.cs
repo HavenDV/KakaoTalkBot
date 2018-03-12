@@ -10,8 +10,8 @@ namespace KakaoTalkBotLibrary.Extensions
         public static Mat ToGray(this Mat mat) =>
             mat.Modify(dst => CvInvoke.CvtColor(mat, dst, ColorConversion.Bgra2Gray));
 
-        public static Mat Resize(this Mat mat, Size size) => 
-            mat.Modify(dst => CvInvoke.Resize(mat, dst, size));
+        public static Mat Resize(this Mat mat, Size size, double fx = 0.0D, double fy = 0.0D, Inter interpolation = Inter.Linear) => 
+            mat.Modify(dst => CvInvoke.Resize(mat, dst, size, fx, fy, interpolation));
 
         public static Mat Modify(this Mat mat, Action<Mat> action)
         {
