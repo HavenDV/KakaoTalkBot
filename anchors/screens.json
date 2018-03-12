@@ -1,0 +1,36 @@
+[
+  {
+    "Name": "add_by_contacts_max.bmp",
+    "Anchors": [
+      {
+        "Name": "Back",
+        "Rectangle": "7, 63, 46, 44"
+      },
+      {
+        "Name": "SelectCode",
+        "Rectangle": "579, 287, 34, 30"
+      },
+      {
+        "Name": "Name",
+        "Rectangle": "294, 71, 198, 204"
+      },
+      {
+        "Name": "Phione",
+        "Rectangle": "231, 316, 333, 72"
+      }
+    ]
+  },
+  {
+    "Name": "find_max.bmp",
+    "Anchors": [
+      {
+        "Name": "Menu",
+        "Rectangle": "578, 255, 36, 141"
+      },
+      {
+        "Name": "Back",
+        "Rectangle": "14, 66, 31, 35"
+      }
+    ]
+  }
+]
