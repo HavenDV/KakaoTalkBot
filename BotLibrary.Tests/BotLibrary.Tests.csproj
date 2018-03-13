@@ -7,8 +7,8 @@
     <ProjectGuid>{8EDF4429-251A-416D-BB68-93F227191BCF}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>KakaoTalkBotLibrary.Tests</RootNamespace>
-    <AssemblyName>KakaoTalkBotLibrary.Tests</AssemblyName>
+    <RootNamespace>BotLibrary.Tests</RootNamespace>
+    <AssemblyName>BotLibrary.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -63,9 +63,9 @@
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\KakaoTalkBotLibrary\KakaoTalkBotLibrary.csproj">
+    <ProjectReference Include="..\BotLibrary\BotLibrary.csproj">
       <Project>{51d984a3-7b01-48ac-9665-53135f570a77}</Project>
-      <Name>KakaoTalkBotLibrary</Name>
+      <Name>BotLibrary</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

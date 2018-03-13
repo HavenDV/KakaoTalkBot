@@ -2,7 +2,7 @@
 using Emgu.CV;
 using Newtonsoft.Json;
 
-namespace KakaoTalkBotLibrary.Utilities
+namespace BotLibrary.Utilities
 {
     public class Screen
     {

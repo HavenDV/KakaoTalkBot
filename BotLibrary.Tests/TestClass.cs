@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using BotLibrary.Extensions;
+using BotLibrary.Tests.Utilities;
+using BotLibrary.Utilities;
 using Emgu.CV;
-using KakaoTalkBotLibrary.Extensions;
-using KakaoTalkBotLibrary.Tests.Utilities;
-using KakaoTalkBotLibrary.Utilities;
 using NUnit.Framework;
 
-namespace KakaoTalkBotLibrary.Tests
+namespace BotLibrary.Tests
 {
     [TestFixture]
     public class TestClass

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using BotLibrary.Utilities;
 using Emgu.CV;
 
 namespace KakaoTalkBot.Utilities
@@ -33,7 +34,7 @@ namespace KakaoTalkBot.Utilities
         public static (Win32.Rect, Mat)[] GetScreenshotOfProcess(string name) =>
             WindowsUtilities
                 .GetScreenshotOfProcess(name)
-                .Select(i => (i.Item1, KakaoTalkBotLibrary.Utilities.MatUtilities.ToMat(i.Item2)))
+                .Select(i => (i.Item1, MatUtilities.ToMat(i.Item2)))
                 .ToArray();
     }
 }

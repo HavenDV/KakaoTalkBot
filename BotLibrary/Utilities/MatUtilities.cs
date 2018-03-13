@@ -2,11 +2,11 @@
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using BotLibrary.Extensions;
 using Emgu.CV;
 using Emgu.CV.CvEnum;
-using KakaoTalkBotLibrary.Extensions;
 
-namespace KakaoTalkBotLibrary.Utilities
+namespace BotLibrary.Utilities
 {
     public static class MatUtilities
     {

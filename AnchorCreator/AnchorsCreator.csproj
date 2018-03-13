@@ -106,9 +106,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\KakaoTalkBotLibrary\KakaoTalkBotLibrary.csproj">
+    <ProjectReference Include="..\KakaoTalkBotLibrary\BotLibrary.csproj">
       <Project>{51d984a3-7b01-48ac-9665-53135f570a77}</Project>
-      <Name>KakaoTalkBotLibrary</Name>
+      <Name>BotLibrary</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

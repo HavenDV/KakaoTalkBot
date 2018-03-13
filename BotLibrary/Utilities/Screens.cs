@@ -1,10 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace KakaoTalkBotLibrary.Utilities
+namespace BotLibrary.Utilities
 {
     public class Screens : List<Screen>
     {

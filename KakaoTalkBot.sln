@@ -5,9 +5,9 @@ VisualStudioVersion = 15.0.27130.2036
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KakaoTalkBot", "KakaoTalkBot\KakaoTalkBot.csproj", "{C3BC50E9-540A-4649-B082-ED3D3F98506A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KakaoTalkBotLibrary", "KakaoTalkBotLibrary\KakaoTalkBotLibrary.csproj", "{51D984A3-7B01-48AC-9665-53135F570A77}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BotLibrary", "BotLibrary\BotLibrary.csproj", "{51D984A3-7B01-48AC-9665-53135F570A77}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KakaoTalkBotLibrary.Tests", "KakaoTalkBotLibrary.Tests\KakaoTalkBotLibrary.Tests.csproj", "{8EDF4429-251A-416D-BB68-93F227191BCF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BotLibrary.Tests", "BotLibrary.Tests\BotLibrary.Tests.csproj", "{8EDF4429-251A-416D-BB68-93F227191BCF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnchorsCreator", "AnchorCreator\AnchorsCreator.csproj", "{9E25F22E-2207-4A9C-B34C-F356D2A53CAE}"
 EndProject

@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using NUnit.Framework;
 
-namespace KakaoTalkBotLibrary.Tests.Utilities
+namespace BotLibrary.Tests.Utilities
 {
     public static class TestUtilities
     {

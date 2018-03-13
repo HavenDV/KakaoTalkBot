@@ -7,7 +7,7 @@ using System.Windows;
 using AnchorsCreator.Extensions;
 using AnchorsCreator.Properties;
 using AnchorsCreator.Utilities;
-using KakaoTalkBotLibrary.Utilities;
+using BotLibrary.Utilities;
 using Ookii.Dialogs.Wpf;
 using Point = System.Windows.Point;
 

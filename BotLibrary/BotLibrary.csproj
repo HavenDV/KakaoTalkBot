@@ -7,8 +7,8 @@
     <ProjectGuid>{51D984A3-7B01-48AC-9665-53135F570A77}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>KakaoTalkBotLibrary</RootNamespace>
-    <AssemblyName>KakaoTalkBotLibrary</AssemblyName>
+    <RootNamespace>BotLibrary</RootNamespace>
+    <AssemblyName>BotLibrary</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp>

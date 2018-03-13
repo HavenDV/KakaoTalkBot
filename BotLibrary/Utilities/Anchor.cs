@@ -1,6 +1,6 @@
 ﻿using System.Drawing;
 
-namespace KakaoTalkBotLibrary.Utilities
+namespace BotLibrary.Utilities
 {
     public class Anchor
     {

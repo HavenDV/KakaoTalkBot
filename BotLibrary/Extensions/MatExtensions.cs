@@ -3,7 +3,7 @@ using System.Drawing;
 using Emgu.CV;
 using Emgu.CV.CvEnum;
 
-namespace KakaoTalkBotLibrary.Extensions
+namespace BotLibrary.Extensions
 {
     public static class MatExtensions
     {
