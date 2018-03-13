@@ -6,7 +6,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 
-namespace KakaoTalkBot.Utilities
+namespace BotLibrary.Utilities
 {
     public static class WindowsUtilities
     {

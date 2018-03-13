@@ -3,7 +3,7 @@ using Emgu.CV;
 using System.Collections.Generic;
 using System.Threading;
 using KakaoTalkBot.Utilities;
-using MatUtilities = BotLibrary.Utilities.MatUtilities;
+using BotLibrary.Utilities;
 
 namespace KakaoTalkBot.Actions
 {

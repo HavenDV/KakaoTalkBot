@@ -2,7 +2,7 @@
 using System.Drawing;
 using System.Runtime.InteropServices;
 
-namespace KakaoTalkBot.Utilities
+namespace BotLibrary.Utilities
 {
     public class Win32
     {

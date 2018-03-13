@@ -59,6 +59,8 @@
     <Compile Include="Utilities\Screens.cs" />
     <Compile Include="Utilities\MatUtilities.cs" />
     <Compile Include="Utilities\Screen.cs" />
+    <Compile Include="Utilities\Win32.cs" />
+    <Compile Include="Utilities\WindowsUtilities.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

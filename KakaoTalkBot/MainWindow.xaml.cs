@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using BotLibrary.Extensions;
 using BotLibrary.Utilities;
 using Emgu.CV;
 using KakaoTalkBot.Actions;
@@ -15,7 +13,6 @@ using KakaoTalkBot.Extensions;
 using KakaoTalkBot.Utilities;
 using Microsoft.Win32;
 using OfficeOpenXml;
-using Pranas;
 
 namespace KakaoTalkBot
 {
@@ -62,15 +59,6 @@ namespace KakaoTalkBot
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            Task.Run(() =>
-            {
-                using (var image = ScreenshotCapture.TakeScreenshot(true))
-                using (var bitmap = new Bitmap(image))
-                using (var _ = bitmap.ToMat().ToGray())
-                {
-                }
-            });
-
             LoadAnchors();
         }
 
