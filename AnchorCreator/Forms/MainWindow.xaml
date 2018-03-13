@@ -23,6 +23,10 @@
         <TabControl Grid.Row="1">
             <TabItem Header="Screens">
                 <Grid Background="#FFE5E5E5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="20"/>
+                    </Grid.RowDefinitions>
                     <ListBox x:Name="ScreensListBox" SelectionMode="Extended" ItemsSource="{Binding ScreensCollection}" SelectionChanged="ScreensListBox_SelectionChanged">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
@@ -30,6 +34,17 @@
                             </DataTemplate>
                         </ListBox.ItemTemplate>
                     </ListBox>
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="25*" />
+                            <ColumnDefinition Width="25*" />
+                            <ColumnDefinition Width="25*" />
+                            <ColumnDefinition Width="25*" />
+                        </Grid.ColumnDefinitions>
+                        <Button Content="Add" Grid.Column="0" Click="AddScreenButton_Click"/>
+                        <Button Content="Delete" Grid.Column="1" Click="DeleteScreenButton_Click"/>
+                        <Button Content="Save" Grid.Column="3" Click="SaveButton_Click"/>
+                    </Grid>
                 </Grid>
             </TabItem>
             <TabItem Header="Anchors">
@@ -52,8 +67,8 @@
                             <ColumnDefinition Width="25*" />
                             <ColumnDefinition Width="25*" />
                         </Grid.ColumnDefinitions>
-                        <Button Content="Add" Grid.Column="0" Click="AddButton_Click"/>
-                        <Button Content="Delete" Grid.Column="1" Click="DeleteButton_Click"/>
+                        <Button Content="Add" Grid.Column="0" Click="AddAnchorButton_Click"/>
+                        <Button Content="Delete" Grid.Column="1" Click="DeleteAnchorButton_Click"/>
                         <Button Content="Edit" Grid.Column="2"/>
                         <Button Content="Save" Grid.Column="3" Click="SaveButton_Click"/>
                     </Grid>
@@ -63,6 +78,7 @@
                 <Grid Background="#FFE5E5E5">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="5" />
+                        <RowDefinition Height="25" />
                         <RowDefinition Height="25" />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>

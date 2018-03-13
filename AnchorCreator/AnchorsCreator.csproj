@@ -48,6 +48,9 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.ValueTuple, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.4.0\lib\net461\System.ValueTuple.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
@@ -63,6 +66,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Forms\SelectProcessWindow.xaml.cs">
+      <DependentUpon>SelectProcessWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Utilities\MessageBoxUtilities.cs" />
     <Page Include="Forms\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -77,6 +83,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Forms\SelectProcessWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -106,7 +116,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\KakaoTalkBotLibrary\BotLibrary.csproj">
+    <ProjectReference Include="..\BotLibrary\BotLibrary.csproj">
       <Project>{51d984a3-7b01-48ac-9665-53135f570a77}</Project>
       <Name>BotLibrary</Name>
     </ProjectReference>

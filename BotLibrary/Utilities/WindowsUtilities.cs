@@ -37,7 +37,7 @@ namespace BotLibrary.Utilities
             }
 
             Win32.GetWindowRect(handle, out var rect);
-            if (rect.Right < 0 || rect.Bottom < 0)
+            if (rect.Right < 0 || rect.Bottom < 0 || rect.Width == 0 || rect.Height == 0)
             {
                 return (new Win32.Rect(), null);
             }

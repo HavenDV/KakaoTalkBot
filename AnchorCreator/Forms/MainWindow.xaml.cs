@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -20,7 +21,7 @@ namespace AnchorsCreator.Forms
         private bool MouseIsDown { get; set; }
         private Point MouseDownPosition { get; set; }
 
-        private Screens Screens { get; } = new Screens();
+        private Screens Screens { get; set; }
 
         private Screen CurrentScreen { get; set; }
         private Anchor CurrentAnchor { get; set; }
@@ -37,12 +38,64 @@ namespace AnchorsCreator.Forms
             InitializeComponent();
 
             Load(Settings.Default.CurrentDirectory);
-            UpdateScreens();
         }
 
         #endregion
 
         #region Event handlers
+
+        private void AddScreenButton_Click(object sender, RoutedEventArgs e)
+        {
+            var window = new SelectProcessWindow();
+            if (window.ShowDialog() != true)
+            {
+                return;
+            }
+
+            var process = window.SelectedProcess;
+            if (process == null)
+            {
+                return;
+            }
+
+            var (_, bitmap) = WindowsUtilities.GetScreenshotOfWindow(process.MainWindowHandle);
+            if (bitmap == null)
+            {
+                MessageBox.Show("Error");
+                return;
+            }
+
+            var path = Path.Combine(Settings.Default.CurrentDirectory, $"{process.ProcessName}_{new Random().Next()}.bmp");
+
+            bitmap.Save(path, ImageFormat.Bmp);
+
+            Load(Settings.Default.CurrentDirectory);
+        }
+
+        private void DeleteScreenButton_Click(object sender, RoutedEventArgs e)
+        {
+            var index = ScreensListBox.SelectedIndex;
+            if (index < 0)
+            {
+                return;
+            }
+
+            var screen = ScreensCollection[index];
+            if (!MessageBoxUtilities.Question($"Are you sure delete the screen: {screen.Name}?"))
+            {
+                return;
+            }
+
+            ScreensCollection.Remove(screen);
+            Screens.Remove(screen);
+
+            var path = Path.Combine(Settings.Default.CurrentDirectory, screen.Name);
+            File.Delete(path);
+
+            Save();
+
+            Load(Settings.Default.CurrentDirectory);
+        }
 
         private void BrowseCurrentPathButton_Click(object sender, RoutedEventArgs e)
         {
@@ -100,7 +153,7 @@ namespace AnchorsCreator.Forms
             AnchorsListBox.SelectedIndex = index;
         }
 
-        private void AddButton_Click(object sender, RoutedEventArgs e)
+        private void AddAnchorButton_Click(object sender, RoutedEventArgs e)
         {
             CurrentScreen.Anchors.Add(new Anchor
             {
@@ -109,7 +162,7 @@ namespace AnchorsCreator.Forms
             UpdateAnchors(CurrentScreen.Anchors.Count - 1);
         }
 
-        private void DeleteButton_Click(object sender, RoutedEventArgs e)
+        private void DeleteAnchorButton_Click(object sender, RoutedEventArgs e)
         {
             var index = AnchorsListBox.SelectedIndex;
             if (index < 0)
@@ -118,7 +171,7 @@ namespace AnchorsCreator.Forms
             }
 
             var anchor = AnchorsCollection[index];
-            if (!MessageBoxUtilities.Question($"Are you sure delete anchor: {anchor.Name}?"))
+            if (!MessageBoxUtilities.Question($"Are you sure delete the anchor: {anchor.Name}?"))
             {
                 return;
             }
@@ -127,10 +180,7 @@ namespace AnchorsCreator.Forms
             CurrentScreen.Anchors.Remove(anchor);
         }
 
-        private void SaveButton_Click(object sender, RoutedEventArgs e)
-        {
-            Screens.Save(Settings.Default.CurrentDirectory);
-        }
+        private void SaveButton_Click(object sender, RoutedEventArgs e) => Save();
 
         private void Grid_MouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
@@ -178,6 +228,8 @@ namespace AnchorsCreator.Forms
 
         #region Private methods
 
+        private void Save() => Screens.Save(Settings.Default.CurrentDirectory);
+
         private void Load(string directory)
         {
             if (!Directory.Exists(directory))
@@ -185,7 +237,7 @@ namespace AnchorsCreator.Forms
                 return;
             }
 
-            Screens.Load(directory);
+            Screens = new Screens(directory);
             UpdateScreens();
         }
 
