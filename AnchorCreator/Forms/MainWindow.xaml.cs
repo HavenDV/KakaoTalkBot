@@ -11,7 +11,7 @@ using KakaoTalkBotLibrary.Utilities;
 using Ookii.Dialogs.Wpf;
 using Point = System.Windows.Point;
 
-namespace AnchorsCreator
+namespace AnchorsCreator.Forms
 {
     public partial class MainWindow : IDisposable
     {
