@@ -1,6 +1,6 @@
 [
   {
-    "Name": "add_by_contacts_max.bmp",
+    "Name": "add_by_contacts.bmp",
     "Anchors": [
       {
         "Name": "Back",
@@ -21,7 +21,68 @@
     ]
   },
   {
-    "Name": "find_max.bmp",
+    "Name": "add_by_contacts_already.bmp",
+    "Anchors": [
+      {
+        "Name": "OK",
+        "Rectangle": "8, 477, 277, 72"
+      },
+      {
+        "Name": "Back",
+        "Rectangle": "11, 65, 42, 43"
+      }
+    ]
+  },
+  {
+    "Name": "add_by_contacts_beforeok.bmp",
+    "Anchors": [
+      {
+        "Name": "OK",
+        "Rectangle": "598, 64, 47, 44"
+      },
+      {
+        "Name": "Back",
+        "Rectangle": "12, 64, 40, 43"
+      }
+    ]
+  },
+  {
+    "Name": "add_by_contacts_success.bmp",
+    "Anchors": [
+      {
+        "Name": "Cancel",
+        "Rectangle": "11, 509, 103, 85"
+      },
+      {
+        "Name": "OK",
+        "Rectangle": "533, 513, 113, 80"
+      }
+    ]
+  },
+  {
+    "Name": "chat.bmp",
+    "Anchors": [
+      {
+        "Name": "ChatField",
+        "Rectangle": "398, 851, 205, 40"
+      }
+    ]
+  },
+  {
+    "Name": "chat_beforesend.bmp",
+    "Anchors": [
+      {
+        "Name": "SendButton",
+        "Rectangle": "609, 848, 39, 44"
+      },
+      {
+        "Name": "Back",
+        "Rectangle": "10, 64, 42, 44"
+      }
+    ]
+  },
+  {
+    "Name": "find_subtab.bmp",
     "Anchors": [
       {
         "Name": "Menu",
@@ -30,6 +91,55 @@
       {
         "Name": "Back",
         "Rectangle": "14, 66, 31, 35"
+      }
+    ]
+  },
+  {
+    "Name": "find_tab.bmp",
+    "Anchors": [
+      {
+        "Name": "FindSubTab",
+        "Rectangle": "38, 174, 83, 73"
+      }
+    ]
+  },
+  {
+    "Name": "profile.bmp",
+    "Anchors": [
+      {
+        "Name": "FreeChat",
+        "Rectangle": "202, 796, 65, 62"
+      }
+    ]
+  },
+  {
+    "Name": "search.bmp",
+    "Anchors": [
+      {
+        "Name": "SearchField",
+        "Rectangle": "222, 60, 365, 49"
+      },
+      {
+        "Name": "FindTab",
+        "Rectangle": "365, 119, 88, 41"
+      }
+    ]
+  },
+  {
+    "Name": "select_phone_code_afterpaste.bmp",
+    "Anchors": [
+      {
+        "Name": "Results",
+        "Rectangle": "14, 399, 579, 111"
+      }
+    ]
+  },
+  {
+    "Name": "select_phone_code_normal.bmp",
+    "Anchors": [
+      {
+        "Name": "SearchField",
+        "Rectangle": "4, 56, 645, 96"
       }
     ]
   }
