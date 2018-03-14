@@ -1,33 +1,58 @@
 ﻿using System;
+using System.Drawing;
 using Emgu.CV;
-using System.Collections.Generic;
 using System.Threading;
 using KakaoTalkBot.Utilities;
 using BotLibrary.Utilities;
+using Emgu.CV.Structure;
 
 namespace KakaoTalkBot.Actions
 {
     public abstract class BaseAction : IAction
     {
-        public IInputArray Mat { get; set; }
+        public Mat Mat { get; set; }
         public bool IsCompleted { get; set; }
+        public bool EnableLog { get; set; }
 
         public delegate void TextDelegate(string text);
         public event TextDelegate NewLog;
         protected void Log(string text) => NewLog?.Invoke(text);
 
-        public Dictionary<string, Mat> AnchorsDictionary { get; set; } = new Dictionary<string, Mat>();
-        protected Mat GetAnchor(string name) => AnchorsDictionary.TryGetValue(name, out var result)
-            ? result : throw new Exception($"Anchor {name} is not found");
+        public Screens Screens { get; set; }
+        protected Mat GetAnchor(string screenName, string anchorName) => 
+            Screens.GetAnchor(screenName, anchorName, Mat.Size) ??
+            throw new Exception($"Anchor {anchorName} is not found on screen {screenName}");
 
-        protected (int, int, int, int) Find(string name)
+        protected void Log(Action<Mat> action, string prefix)
         {
-            return MatUtilities.Find(Mat, GetAnchor(name));
+            if (!EnableLog)
+            {
+                return;
+            }
+
+            using (var mat = Mat.Clone())
+            {
+                action?.Invoke(mat);
+                mat.Save($"D:/logs/log_{prefix}_{new Random().Next()}.png");
+            }
         }
 
-        protected bool IsExists(string name)
+        protected (int x, int y, int w, int h) Find(string screenName, string anchorName)
         {
-            return MatUtilities.IsExists(Mat, GetAnchor(name));
+            var (rectangle, _, _) = MatUtilities.Find(Mat, GetAnchor(screenName, anchorName));
+
+            Log(mat => CvInvoke.Rectangle(mat, rectangle, new MCvScalar(0)), "Find");
+
+            return (rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height);
+        }
+
+        protected bool IsExists(string screenName, string anchorName)
+        {
+            var (rectangle, threshold, isExists) = MatUtilities.Find(Mat, GetAnchor(screenName, anchorName));
+
+            Log(mat => CvInvoke.Rectangle(mat, rectangle, new MCvScalar(0)), $"IsExists_{threshold}");
+
+            return isExists;
         }
 
         protected static void Sleep(int millisecondsTimeout) => Thread.Sleep(millisecondsTimeout);
@@ -39,7 +64,7 @@ namespace KakaoTalkBot.Actions
             Sleep(sleep);
         }
 
-        public bool OnAction(IInputArray mat)
+        public bool OnAction(Mat mat)
         {
             try
             {
@@ -53,7 +78,7 @@ namespace KakaoTalkBot.Actions
             }
         }
 
-        protected abstract bool OnActionInternal(IInputArray mat);
+        protected abstract bool OnActionInternal(Mat mat);
         public abstract string CurrentActionName { get; }
     }
 }

@@ -25,12 +25,12 @@ namespace KakaoTalkBot.Actions
 
         private void Search()
         {
-            if (!IsExists("nox_search.bmp"))
+            if (!IsExists("search.bmp", "SearchField"))
             {
                 return;
             }
 
-            var (x, y, w, h) = Find("nox_search.bmp");
+            var (x, y, w, h) = Find("search.bmp", "SearchField");
             x += w / 2;
             y += h / 2;
 
@@ -46,23 +46,23 @@ namespace KakaoTalkBot.Actions
 
         private void Chat()
         {
-            if (!IsExists("nox_free_chat.bmp"))
+            if (!IsExists("profile.bmp", "FreeChat"))
             {
                 return;
             }
 
-            var (x, y, w, h) = Find("nox_free_chat.bmp");
+            var (x, y, w, h) = Find("profile.bmp", "FreeChat");
             MoveAndClick(x, y, w / 2, h / 2);
         }
 
         private void SendMessagePrepare()
         {
-            if (!IsExists("chat_field.bmp"))
+            if (!IsExists("chat.bmp", "ChatField"))
             {
                 return;
             }
 
-            var (x, y, w, h) = Find("chat_field.bmp");
+            var (x, y, w, h) = Find("chat.bmp", "ChatField");
             MoveAndClick(x, y, w / 2, h / 2);
 
             Sleep(500);
@@ -72,21 +72,21 @@ namespace KakaoTalkBot.Actions
 
         private void SendMessage()
         {
-            if (!IsExists("send_message_back_nox.bmp"))
+            if (!IsExists("chat_beforesend.bmp", "Back"))
             {
                 return;
             }
 
-            var (x, y, w, h) = Find("send_message_nox.bmp");
+            var (x, y, w, h) = Find("chat_beforesend.bmp", "SendButton");
             MoveAndClick(x, y, w / 2, h / 2);
 
             Sleep(500);
 
-            (x, y, w, h) = Find("send_message_back_nox.bmp");
+            (x, y, w, h) = Find("chat_beforesend.bmp", "Back");
             MoveAndClick(x, y, w / 2, h / 2);
         }
 
-        protected override bool OnActionInternal(IInputArray mat)
+        protected override bool OnActionInternal(Mat mat)
         {
             switch (Action)
             {

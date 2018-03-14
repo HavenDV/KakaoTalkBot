@@ -7,7 +7,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using BotLibrary.Utilities;
-using Emgu.CV;
 using KakaoTalkBot.Actions;
 using KakaoTalkBot.Extensions;
 using KakaoTalkBot.Utilities;
@@ -22,7 +21,7 @@ namespace KakaoTalkBot
 
         private static string ProcessName { get; } = "Nox";
 
-        private Dictionary<string, Mat> AnchorsDictionary { get; set; } = new Dictionary<string, Mat>();
+        private Screens Screens { get; set; }
         private Hook Hook { get; } = new Hook("Global Action Hook");
 
         private bool IsStarted { get; set; }
@@ -59,7 +58,7 @@ namespace KakaoTalkBot
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            LoadAnchors();
+            LoadScreens();
         }
 
         private void AddNumberButton_Click(object sender, RoutedEventArgs e)
@@ -125,11 +124,11 @@ namespace KakaoTalkBot
 
         #region Anchors
 
-        private void LoadAnchors() => SafeAction(nameof(LoadAnchors), () =>
+        private void LoadScreens() => SafeAction(nameof(LoadScreens), () =>
         {
-            AnchorsDictionary = MatUtilities.LoadImages("anchors");
+            Screens = new Screens("anchors");
 
-            Log($"Anchors count: {AnchorsDictionary.Count}");
+            Log($"Screens count: {Screens.Count}");
         });
 
         #endregion
@@ -193,7 +192,7 @@ namespace KakaoTalkBot
 
         private void Action(string name, IAction action) => SafeAction(name, () =>
         {
-            action.AnchorsDictionary = AnchorsDictionary;
+            action.Screens = Screens;
 
             WindowsUtilities.ShowWindow(ProcessName, 100);
 
@@ -232,11 +231,7 @@ namespace KakaoTalkBot
 
         public void Dispose()
         {
-            foreach (var pair in AnchorsDictionary)
-            {
-                pair.Value.Dispose();
-            }
-            AnchorsDictionary.Clear();
+            Screens.Dispose();
         }
 
         #endregion

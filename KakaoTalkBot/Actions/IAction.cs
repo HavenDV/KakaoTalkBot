@@ -1,5 +1,5 @@
 ﻿using Emgu.CV;
-using System.Collections.Generic;
+using BotLibrary.Utilities;
 
 namespace KakaoTalkBot.Actions
 {
@@ -8,8 +8,8 @@ namespace KakaoTalkBot.Actions
         bool IsCompleted { get; set; }
         string CurrentActionName { get; }
         event BaseAction.TextDelegate NewLog;
-        Dictionary<string, Mat> AnchorsDictionary { get; set; }
+        Screens Screens { get; set; }
 
-        bool OnAction(IInputArray mat);
+        bool OnAction(Mat mat);
     }
 }
