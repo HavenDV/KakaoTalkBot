@@ -4,6 +4,7 @@ using System.Linq;
 using BotLibrary.Tests.Utilities;
 using BotLibrary.Utilities;
 using Emgu.CV;
+using Emgu.CV.Structure;
 using NUnit.Framework;
 
 namespace BotLibrary.Tests
@@ -23,8 +24,10 @@ namespace BotLibrary.Tests
         [Test]
         public void TestMethod()
         {
-            IsExistsBaseTest("add_by_contacts_max.bmp", "add_by_contacts");
-            IsExistsBaseTest("find_max.bmp", "find");
+            IsExistsBaseTest("add_by_contacts.bmp", "add_by_contacts");
+            IsExistsBaseTest("find_subtab.bmp", "find_subtab");
+            IsExistsBaseTest("select_phone_code_normal.bmp", "select_phone_code_normal");
+            IsExistsBaseTest("select_phone_code_afterpaste.bmp", "select_phone_code_afterpaste");
         }
 
         #endregion
@@ -37,10 +40,17 @@ namespace BotLibrary.Tests
             {
                 foreach (var (anchorName, anchor) in Screens.GetAnchors(screenName, pair.Value.Size))
                 {
-                    var (threshold, isExists) = MatUtilities.IsExistsEx(pair.Value, anchor);
+                    var (rectangle, threshold, isExists) = MatUtilities.Find(pair.Value, anchor);
                     if (!isExists)
                     {
                         Assert.Warn($"!MatUtilities.IsExists: Anchor: {anchorName}. Image: {pair.Key}. Threshold: {threshold}. Edge threshold: {MatUtilities.IsExistsThreshold}");
+
+                        using (var mat = pair.Value.Clone())
+                        {
+                            CvInvoke.Rectangle(mat, rectangle, new MCvScalar(0));
+                            CvInvoke.Imshow("fail", mat);
+                            CvInvoke.WaitKey();
+                        }
                     }
                 }
             }

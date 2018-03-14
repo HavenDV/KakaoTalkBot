@@ -68,11 +68,12 @@ namespace BotLibrary.Utilities
             File.WriteAllText(path, text);
         }
 
-        public Screen GetScreen(string screenName) => this
-            .FirstOrDefault(i => string.Equals(i.Name, screenName, StringComparison.OrdinalIgnoreCase));
+        public Screen GetScreen(string name) => this
+            .FirstOrDefault(i => string.Equals(i.Name, name, StringComparison.OrdinalIgnoreCase))
+            ?? throw new Exception($"Screen is not found: {name}");
 
         public Mat GetAnchor(string screenName, string anchorName, Size size) => GetScreen(screenName)
-            ?.GetAnchor(anchorName, size);
+            ?.GetAnchorMat(anchorName, size);
 
         public (string name, Mat mat)[] GetAnchors(string screenName, Size size) => GetScreen(screenName)
             ?.GetAnchors(size);

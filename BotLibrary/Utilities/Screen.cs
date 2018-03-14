@@ -25,33 +25,56 @@ namespace BotLibrary.Utilities
 
         public List<Anchor> Anchors { get; set; } = new List<Anchor>();
 
-        public Mat GetAnchorMat(Anchor anchor, Size size = default(Size))
+        public (double fx, double fy) GetAnchorKoefs(Anchor anchor, Size size = default(Size))
         {
             if (size == Size.Empty)
             {
                 size = Mat.Size;
             }
 
-            var anchorMat = new Mat(Mat, anchor.Rectangle);
             var fx = 1.0 * size.Width / Mat.Width;
             var fy = 1.0 * size.Height / Mat.Height;
+
+            return (fx, fy);
+        }
+
+        private int ToInt(double value) => (int)Math.Round(value);
+
+        public Rectangle GetAnchorRectangle(Anchor anchor, Size size = default(Size))
+        {
+            var (fx, fy) = GetAnchorKoefs(anchor, size);
+            var rect = anchor.Rectangle;
+
+            var w = ToInt(rect.Width * fx);
+            var h = ToInt(rect.Height * fy);
+            var x = ToInt((rect.X + rect.Width / 2) * fx) - w / 2;
+            var y = ToInt((rect.Y + rect.Height) * fy);
+
+            return new Rectangle(x, y, w, h);
+        }
+
+        public Rectangle GetAnchorRectangle(string name, Size size = default(Size)) =>
+            GetAnchorRectangle(GetAnchorByName(name), size);
+
+        public Mat GetAnchorMat(Anchor anchor, Size size = default(Size))
+        {
+            var anchorMat = new Mat(Mat, anchor.Rectangle);
+            var (fx, fy) = GetAnchorKoefs(anchor, size);
             var resizedAnchorMat = anchorMat.Resize(Size.Empty, fx, fy, Inter.Area);
 
             return resizedAnchorMat;
         }
 
-        public Mat GetAnchor(string name, Size size = default(Size))
-        {
-            var anchor = Anchors
-                         ?.FirstOrDefault(i => string.Equals(i.Name, name, StringComparison.OrdinalIgnoreCase)) ??
-                         throw new Exception($"Anchor is not found: {name}");
+        public Anchor GetAnchorByName(string name) => Anchors
+            ?.FirstOrDefault(i => string.Equals(i.Name, name, StringComparison.OrdinalIgnoreCase))
+            ?? throw new Exception($"Anchor is not found: {name}");
 
-            return GetAnchorMat(anchor, size);
-        }
+        public Mat GetAnchorMat(string name, Size size = default(Size)) => 
+            GetAnchorMat(GetAnchorByName(name), size);
 
         public (string name, Mat mat)[] GetAnchors(Size size = default(Size))
         {
-            return Anchors.Select(i => (i.Name, GetAnchor(i.Name, size))).ToArray();
+            return Anchors.Select(i => (i.Name, GetAnchorMat(i, size))).ToArray();
         }
 
         #region IDisposable
