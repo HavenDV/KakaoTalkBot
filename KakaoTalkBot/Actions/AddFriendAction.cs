@@ -94,6 +94,8 @@ namespace KakaoTalkBot.Actions
 
             var (x, y, w, h) = Find("add_by_contacts_beforeok.bmp", "OK");
             MoveAndClick(x, y, w / 2, h / 2);
+
+            Sleep(1000);
         }
 
         private void AddedCancel()

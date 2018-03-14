@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Drawing;
 using Emgu.CV;
 using System.Threading;
 using KakaoTalkBot.Utilities;

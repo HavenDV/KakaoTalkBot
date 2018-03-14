@@ -8,7 +8,7 @@
     <Grid>
         <Button Content="Add Number" HorizontalAlignment="Left" Margin="407,13,0,0" VerticalAlignment="Top" Width="99" Height="26" Click="AddNumberButton_Click"/>
         <Button Content="Send Message" HorizontalAlignment="Left" Margin="407,47,0,0" VerticalAlignment="Top" Width="99" Height="26" Click="SendMessageButton_Click"/>
-        <TextBox x:Name="LogTextBox" HorizontalAlignment="Left" Height="188" Margin="10,121,0,0" TextWrapping="Wrap" Text="Log:" VerticalAlignment="Top" Width="497"/>
+        <TextBox x:Name="LogTextBox" HorizontalAlignment="Left" Height="157" Margin="10,152,0,0" TextWrapping="Wrap" Text="Log:" VerticalAlignment="Top" Width="497"/>
         <Label Content="Number" HorizontalAlignment="Left" Margin="9,13,0,0" VerticalAlignment="Top" Width="90"/>
         <TextBox x:Name="NumberTextBox" Text="01037638972" HorizontalAlignment="Left" Height="27" Margin="104,13,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="298"/>
         <Label Content="Message" HorizontalAlignment="Left" Margin="9,47,0,0" VerticalAlignment="Top" Width="90"/>
@@ -21,7 +21,9 @@
             </ListView.View>
         </ListView>
         <Button Content="Load Excel" HorizontalAlignment="Left" Margin="697,285,0,0" VerticalAlignment="Top" Width="99" Height="26" Click="LoadExcelButton_Click"/>
-        <Label Content="Country" HorizontalAlignment="Left" Margin="9,78,0,0" VerticalAlignment="Top" Width="90"/>
+        <Label Content="Country:" HorizontalAlignment="Left" Margin="9,78,0,0" VerticalAlignment="Top" Width="90"/>
         <TextBox x:Name="CountryTextBox" Text="South Korea" HorizontalAlignment="Left" Height="26" Margin="104,78,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="298"/>
+        <Label Content="Timeout:" HorizontalAlignment="Left" Margin="9,108,0,0" VerticalAlignment="Top" Width="90"/>
+        <TextBox x:Name="TimeoutTextBox" Text="500" HorizontalAlignment="Left" Height="26" Margin="104,108,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="298"/>
     </Grid>
 </Window>

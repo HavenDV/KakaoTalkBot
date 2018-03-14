@@ -61,14 +61,16 @@ namespace KakaoTalkBot
             LoadScreens();
         }
 
+        private int Timeout => int.TryParse(TimeoutTextBox.Text, out var result) ? result : 1000;
+
         private void AddNumberButton_Click(object sender, RoutedEventArgs e)
         {
-             MultiAction(() => AddFriend(NumberTextBox.Text, NumberTextBox.Text, CountryTextBox.Text));
+             MultiAction(() => AddFriend(NumberTextBox.Text, NumberTextBox.Text, CountryTextBox.Text, Timeout));
         }
 
         private void SendMessageButton_Click(object sender, RoutedEventArgs e)
         {
-            MultiAction(() => SendMessage(NumberTextBox.Text, MessageTextBox.Text));
+            MultiAction(() => SendMessage(NumberTextBox.Text, MessageTextBox.Text, Timeout));
         }
 
         private async void LoadExcelButton_Click(object sender, RoutedEventArgs e)
@@ -190,7 +192,7 @@ namespace KakaoTalkBot
             }
         }
 
-        private void Action(string name, IAction action) => SafeAction(name, () =>
+        private void Action(string name, IAction action, int timeout) => SafeAction(name, () =>
         {
             action.Screens = Screens;
 
@@ -209,7 +211,7 @@ namespace KakaoTalkBot
                     }
                 }
 
-                Thread.Sleep(1000);
+                Thread.Sleep(timeout);
             }
         });
 
@@ -217,11 +219,11 @@ namespace KakaoTalkBot
 
         #region Actions
 
-        private void SendMessage(string phone, string text) =>
-            Action(nameof(SendMessage), new SendMessageAction { Phone = phone, Text = text });
+        private void SendMessage(string phone, string text, int timeout) =>
+            Action(nameof(SendMessage), new SendMessageAction { Phone = phone, Text = text }, timeout);
 
-        private void AddFriend(string name, string phone, string country) =>
-            Action(nameof(SendMessage), new AddFriendAction { Name = name, Phone = phone, Country = country });
+        private void AddFriend(string name, string phone, string country, int timeout) =>
+            Action(nameof(SendMessage), new AddFriendAction { Name = name, Phone = phone, Country = country }, timeout);
 
         #endregion
 
