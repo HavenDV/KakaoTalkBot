@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using BotLibrary.Extensions;
 using Emgu.CV;
 using Newtonsoft.Json;
 
 namespace BotLibrary.Utilities
 {
-    public class Screens : List<Screen>
+    public class Screens : List<Screen>, IDisposable
     {
         #region Properties
 
@@ -78,5 +79,13 @@ namespace BotLibrary.Utilities
 
         #endregion
 
+        #region IDisposable
+
+        public void Dispose()
+        {
+            (this as List<Screen>).Dispose();
+        }
+
+        #endregion
     }
 }

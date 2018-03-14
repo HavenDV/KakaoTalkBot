@@ -9,7 +9,7 @@ using Newtonsoft.Json;
 
 namespace BotLibrary.Utilities
 {
-    public class Screen
+    public class Screen : IDisposable
     {
         public string Name { get; set; }
 
@@ -53,5 +53,15 @@ namespace BotLibrary.Utilities
         {
             return Anchors.Select(i => (i.Name, GetAnchor(i.Name, size))).ToArray();
         }
+
+        #region IDisposable
+
+        public void Dispose()
+        {
+            Mat?.Dispose();
+            Mat = null;
+        }
+
+        #endregion
     }
 }
