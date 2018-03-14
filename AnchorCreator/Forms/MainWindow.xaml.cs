@@ -74,13 +74,7 @@ namespace AnchorsCreator.Forms
 
         private void DeleteScreenButton_Click(object sender, RoutedEventArgs e)
         {
-            var index = ScreensListBox.SelectedIndex;
-            if (index < 0)
-            {
-                return;
-            }
-
-            var screen = ScreensCollection[index];
+            var screen = GetSelectedScreen();
             if (!MessageBoxUtilities.Question($"Are you sure delete the screen: {screen.Name}?"))
             {
                 return;
@@ -178,6 +172,39 @@ namespace AnchorsCreator.Forms
 
             AnchorsCollection.Remove(anchor);
             CurrentScreen.Anchors.Remove(anchor);
+        }
+
+        private Screen GetSelectedScreen()
+        {
+            var index = ScreensListBox.SelectedIndex;
+
+            return index < 0 ? null : ScreensCollection[index];
+        }
+
+        private void EditScreenButton_Click(object sender, RoutedEventArgs e)
+        {
+            var screen = GetSelectedScreen();
+            var window = new RenameWindow
+            {
+                OldName = screen.Name,
+                NewName = screen.Name
+            };
+            if (window.ShowDialog() != true || 
+                string.Equals(window.NewName, screen.Name, StringComparison.OrdinalIgnoreCase))
+            {
+                return;
+            }
+
+            var newName = window.NewName;
+            var path = Path.Combine(Settings.Default.CurrentDirectory, screen.Name);
+            var newPath = Path.Combine(Settings.Default.CurrentDirectory, newName);
+            File.Copy(path, newPath);
+            File.Delete(path);
+
+            screen.Name = newName;
+            Save();
+
+            Load(Settings.Default.CurrentDirectory);
         }
 
         private void SaveButton_Click(object sender, RoutedEventArgs e) => Save();

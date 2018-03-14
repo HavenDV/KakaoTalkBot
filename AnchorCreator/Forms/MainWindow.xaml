@@ -8,11 +8,11 @@
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         Title="Anchors Creator" Height="600" Width="800" WindowState="Maximized">
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="70*"/>
-            <RowDefinition Height="30*"/>
-        </Grid.RowDefinitions>
-        <Grid Background="#FFE7F2F5" Grid.Row="0" MouseUp="Grid_MouseUp" MouseDown="Grid_MouseDown" MouseMove="Grid_MouseMove">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="70*" />
+            <ColumnDefinition Width="30*" />
+        </Grid.ColumnDefinitions>
+        <Grid Background="#FFE7F2F5" Grid.Column="0" MouseUp="Grid_MouseUp" MouseDown="Grid_MouseDown" MouseMove="Grid_MouseMove">
             <Grid x:Name="ImageGrid">
                 <Image x:Name="Image" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Top"/>
                 <Canvas>
@@ -20,7 +20,7 @@
                 </Canvas>
             </Grid>
         </Grid>
-        <TabControl Grid.Row="1">
+        <TabControl Grid.Column="1">
             <TabItem Header="Screens">
                 <Grid Background="#FFE5E5E5">
                     <Grid.RowDefinitions>
@@ -43,6 +43,7 @@
                         </Grid.ColumnDefinitions>
                         <Button Content="Add" Grid.Column="0" Click="AddScreenButton_Click"/>
                         <Button Content="Delete" Grid.Column="1" Click="DeleteScreenButton_Click"/>
+                        <Button Content="Edit" Grid.Column="2" Click="EditScreenButton_Click"/>
                         <Button Content="Save" Grid.Column="3" Click="SaveButton_Click"/>
                     </Grid>
                 </Grid>
