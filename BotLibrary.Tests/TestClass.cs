@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.IO;
 using System.Linq;
-using BotLibrary.Extensions;
 using BotLibrary.Tests.Utilities;
 using BotLibrary.Utilities;
 using Emgu.CV;
@@ -26,28 +23,25 @@ namespace BotLibrary.Tests
         [Test]
         public void TestMethod()
         {
-            IsExistsBaseTest("add_by_contacts_max.bmp", "Back", "add_by_contacts");
+            IsExistsBaseTest("add_by_contacts_max.bmp", "add_by_contacts");
+            IsExistsBaseTest("find_max.bmp", "find");
         }
 
         #endregion
 
         #region Base Tests
 
-        private static void IsExistsBaseTest(string screenName, string anchorName, string prefix)
+        private static void IsExistsBaseTest(string screenName, string prefix)
         {
-            var (screen, anchor) = GetAnchor(anchorName, screenName, Screens);
-            foreach (var pair in GetImagesWithPrefix(prefix, Screenshots))
+            foreach (var pair in GetImagesWithPrefix(Screenshots, prefix))
             {
-                var anchorMat = new Mat(screen.Mat, anchor.Rectangle);
-
-                var fx = 1.0 * pair.Value.Width / screen.Mat.Width;
-                var fy = 1.0 * pair.Value.Height / screen.Mat.Height;
-                var resizedAnchorMat = anchorMat.Resize(Size.Empty, fx, fy);
-
-                var result = MatUtilities.IsExistsEx(pair.Value, resizedAnchorMat);
-                if (!result.isExists)
+                foreach (var (anchorName, anchor) in Screens.GetAnchors(screenName, pair.Value.Size))
                 {
-                    Assert.Warn($"!MatUtilities.IsExists: Anchor: {anchorName}. Image: {pair.Key}. Threshold: {result.threshold}. Edge threshold: {MatUtilities.IsExistsThreshold}");
+                    var (threshold, isExists) = MatUtilities.IsExistsEx(pair.Value, anchor);
+                    if (!isExists)
+                    {
+                        Assert.Warn($"!MatUtilities.IsExists: Anchor: {anchorName}. Image: {pair.Key}. Threshold: {threshold}. Edge threshold: {MatUtilities.IsExistsThreshold}");
+                    }
                 }
             }
         }
@@ -56,19 +50,7 @@ namespace BotLibrary.Tests
 
         #region Utilities
 
-        private static (Screen screen, Anchor anchor) GetAnchor(string name, string screenName, Screens screens)
-        {
-            var screen = screens.FirstOrDefault(i => string.Equals(i.Name, screenName, StringComparison.OrdinalIgnoreCase));
-            var anchor = screen
-                             ?.Anchors
-                             ?.FirstOrDefault(i => string.Equals(i.Name, name, StringComparison.OrdinalIgnoreCase)) ??
-                             throw new FileNotFoundException($"Anchor is not found: {name}");
-
-
-            return (screen, anchor);
-        }
-
-        private static Dictionary<string, Mat> GetImagesWithPrefix(string prefix, Dictionary<string, Mat> dictionary) =>
+        private static Dictionary<string, Mat> GetImagesWithPrefix(Dictionary<string, Mat> dictionary, string prefix) =>
             dictionary
                 .Where(pair => pair.Key.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
                 .ToDictionary(pair => pair.Key, pair => pair.Value);

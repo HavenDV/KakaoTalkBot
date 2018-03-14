@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
+using Emgu.CV;
 using Newtonsoft.Json;
 
 namespace BotLibrary.Utilities
@@ -16,10 +18,6 @@ namespace BotLibrary.Utilities
         #endregion
 
         #region Constructors
-
-        public Screens()
-        {
-        }
 
         public Screens(string folder)
         {
@@ -69,7 +67,14 @@ namespace BotLibrary.Utilities
             File.WriteAllText(path, text);
         }
 
-        //public Anchor GetAnchor(string name) => TryGetValue(name, out var result) ? result : null;
+        public Screen GetScreen(string screenName) => this
+            .FirstOrDefault(i => string.Equals(i.Name, screenName, StringComparison.OrdinalIgnoreCase));
+
+        public Mat GetAnchor(string screenName, string anchorName, Size size) => GetScreen(screenName)
+            ?.GetAnchor(anchorName, size);
+
+        public (string name, Mat mat)[] GetAnchors(string screenName, Size size) => GetScreen(screenName)
+            ?.GetAnchors(size);
 
         #endregion
 
