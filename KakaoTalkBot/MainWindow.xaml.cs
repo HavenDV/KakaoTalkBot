@@ -150,11 +150,18 @@ namespace KakaoTalkBot
         {
             try
             {
+                var dateTime = DateTime.Now;
+
                 Log($"Action \"{name}\" started...");
 
                 action?.Invoke();
 
                 Log($"Action \"{name}\" completed");
+
+                var milliseconds = DateTime.Now.Subtract(dateTime).TotalMilliseconds;
+                const int millisecondsIn12Hours = 12 * 60 * 60 * 1000;
+                var scope = millisecondsIn12Hours / milliseconds;
+                ScopeTextBlock.Text = $"{scope:F0} per 12 hours";
             }
             catch (Exception exception)
             {
