@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -9,18 +10,38 @@ using Newtonsoft.Json;
 
 namespace BotLibrary.Utilities
 {
-    public class Screens : List<Screen>, IDisposable
+    public class ApplicationInfo : IDisposable, INotifyPropertyChanged
     {
         #region Properties
 
         private static string MetadataFileName { get; } = "screens.json";
+
         private static string GetMetadataPath(string folder) => Path.Combine(folder, MetadataFileName);
+
+        private Offsets _offsets = new Offsets();
+        public Offsets Offsets
+        {
+            get => _offsets;
+            set
+            {
+                _offsets = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Offsets)));
+            }
+        }
+
+        public List<Screen> Screens { get; } = new List<Screen>();
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         #endregion
 
         #region Constructors
 
-        public Screens(string folder)
+        public ApplicationInfo()
+        {
+        }
+
+        public ApplicationInfo(string folder)
         {
             Load(folder);
         }
@@ -39,24 +60,27 @@ namespace BotLibrary.Utilities
             var images = MatUtilities.LoadImages(folder, "*.bmp");
 
             var path = GetMetadataPath(folder);
-            var screens = File.Exists(path)
-                ? JsonConvert.DeserializeObject<List<Screen>>(File.ReadAllText(path))
-                : new List<Screen>();
-
+            var info = File.Exists(path)
+                ? JsonConvert.DeserializeObject<ApplicationInfo>(File.ReadAllText(path))
+                : new ApplicationInfo();
+            
+            Screens.Dispose();
+            Screens.Clear();
             AddValues(images
-                .Select(pair => screens.FirstOrDefault(i => string.Equals(pair.Key, i.Name, StringComparison.OrdinalIgnoreCase))
-                    ?.WithMat(pair.Value) ?? new Screen
+                .Select(pair => info.GetScreenOrDefault(pair.Key)?.WithMat(pair.Value) ?? new Screen
                 {
                     Name = pair.Key,
                     Mat = pair.Value
                 }));
+
+            Offsets = info.Offsets;
         }
 
         private void AddValues(IEnumerable<Screen> screens)
         {
             foreach (var screen in screens)
             {
-                Add(screen);
+                Screens.Add(screen);
             }
         }
 
@@ -68,12 +92,16 @@ namespace BotLibrary.Utilities
             File.WriteAllText(path, text);
         }
 
-        public Screen GetScreen(string name) => this
-            .FirstOrDefault(i => string.Equals(i.Name, name, StringComparison.OrdinalIgnoreCase))
-            ?? throw new Exception($"Screen is not found: {name}");
+        public Screen GetScreenOrDefault(string name) => Screens
+            .FirstOrDefault(i => string.Equals(i.Name, name, StringComparison.OrdinalIgnoreCase));
+
+        public Screen GetScreen(string name) => GetScreenOrDefault(name) ?? throw new Exception($"Screen is not found: {name}");
 
         public Mat GetAnchor(string screenName, string anchorName, Size size) => GetScreen(screenName)
             ?.GetAnchorMat(anchorName, size);
+
+        public Rectangle GetAnchorRectangle(string screenName, string anchorName, Size size) => GetScreen(screenName)
+            ?.GetAnchorRectangle(anchorName, size) ?? Rectangle.Empty;
 
         public (string name, Mat mat)[] GetAnchors(string screenName, Size size) => GetScreen(screenName)
             ?.GetAnchors(size);
@@ -84,7 +112,7 @@ namespace BotLibrary.Utilities
 
         public void Dispose()
         {
-            (this as List<Screen>).Dispose();
+            Screens.Dispose();
         }
 
         #endregion

@@ -21,7 +21,7 @@ namespace AnchorsCreator.Forms
         private bool MouseIsDown { get; set; }
         private Point MouseDownPosition { get; set; }
 
-        private Screens Screens { get; set; }
+        public ApplicationInfo Info { get; set; } = new ApplicationInfo();
 
         private Screen CurrentScreen { get; set; }
         private Anchor CurrentAnchor { get; set; }
@@ -81,7 +81,7 @@ namespace AnchorsCreator.Forms
             }
 
             ScreensCollection.Remove(screen);
-            Screens.Remove(screen);
+            Info.Screens.Remove(screen);
 
             var path = Path.Combine(Settings.Default.CurrentDirectory, screen.Name);
             File.Delete(path);
@@ -118,12 +118,12 @@ namespace AnchorsCreator.Forms
         private void UpdateScreens()
         {
             ScreensCollection.Clear();
-            if (!Screens.Any())
+            if (!Info.Screens.Any())
             {
                 return;
             }
 
-            foreach (var screen in Screens)
+            foreach (var screen in Info.Screens)
             {
                 ScreensCollection.Add(screen);
             }
@@ -189,7 +189,7 @@ namespace AnchorsCreator.Forms
                 OldName = screen.Name,
                 NewName = screen.Name
             };
-            if (window.ShowDialog() != true || 
+            if (window.ShowDialog() != true ||
                 string.Equals(window.NewName, screen.Name, StringComparison.OrdinalIgnoreCase))
             {
                 return;
@@ -241,7 +241,7 @@ namespace AnchorsCreator.Forms
         {
             var index = ScreensListBox.SelectedIndex;
 
-            ShowScreen(index < 0 ? null : Screens.ElementAt(index));
+            ShowScreen(index < 0 ? null : Info.Screens.ElementAt(index));
         }
 
         private void AnchorsListBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
@@ -254,8 +254,11 @@ namespace AnchorsCreator.Forms
         #endregion
 
         #region Private methods
-
-        private void Save() => Screens.Save(Settings.Default.CurrentDirectory);
+        
+        private void Save()
+        {
+            Info.Save(Settings.Default.CurrentDirectory);
+        }
 
         private void Load(string directory)
         {
@@ -264,7 +267,7 @@ namespace AnchorsCreator.Forms
                 return;
             }
 
-            Screens = new Screens(directory);
+            Info.Load(directory);
             UpdateScreens();
         }
 

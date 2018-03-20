@@ -10,7 +10,7 @@ namespace BotLibrary.Utilities
 {
     public static class MatUtilities
     {
-        public static double IsExistsThreshold { get; } = 1.0;
+        public static double IsExistsThreshold { get; } = 0.02;
 
         public static Dictionary<string, Mat> LoadImages(string folder, string extension = "*.*")
         {

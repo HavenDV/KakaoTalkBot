@@ -45,12 +45,15 @@ namespace BotLibrary.Utilities
             var (fx, fy) = GetAnchorKoefs(anchor, size);
             var rect = anchor.Rectangle;
 
-            var w = ToInt(rect.Width * fx);
-            var h = ToInt(rect.Height * fy);
-            var x = ToInt((rect.X + rect.Width / 2) * fx) - w / 2;
-            var y = ToInt((rect.Y + rect.Height) * fy);
+            const int titleHeight = 30;
+            var y = rect.Y - titleHeight;
 
-            return new Rectangle(x, y, w, h);
+            var x1 = ToInt(rect.X * fx);
+            var y1 = ToInt(y * fy) + titleHeight;
+            var x2 = ToInt((rect.X + rect.Width) * fx);
+            var y2 = ToInt((y + rect.Height) * fy) + titleHeight;
+
+            return new Rectangle(x1, y1, x2 - x1, y2 - y1);
         }
 
         public Rectangle GetAnchorRectangle(string name, Size size = default(Size)) =>
