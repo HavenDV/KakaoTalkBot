@@ -1,6 +1,4 @@
 ﻿using System;
-using Emgu.CV;
-using KakaoTalkBot.Utilities;
 
 namespace KakaoTalkBot.Actions
 {
@@ -29,112 +27,97 @@ namespace KakaoTalkBot.Actions
 
         private void AddByContacts()
         {
-            if (!IsExists("find_subtab.bmp", "Menu"))
+            if (!IsExists("find_subtab.bmp", "Menu", out var tuple))
             {
                 return;
             }
 
-            var (x, y, w, h) = Find("find_subtab.bmp", "Menu");
-            MoveAndClick(x, y, w / 2, 3 * h / 4);
+            MoveAndClick(tuple, 0.5, 0.75);
         }
 
         private void CountryCode()
         {
-            if (!IsExists("add_by_contacts.bmp", "SelectCode"))
+            if (!IsExists("add_by_contacts.bmp", "SelectCode", out var tuple))
             {
                 return;
             }
 
-            Paste(Name, 500);
-
-            var (x, y, w, h) = Find("add_by_contacts.bmp", "SelectCode");
-            MoveAndClick(x, y, w / 2, h / 2);
+            Paste(Name);
+            MoveAndClick(tuple, 0.5, 0.5);
         }
 
         private void SearchCountryCode()
         {
-            if (!IsExists("select_phone_code_normal.bmp", "SearchField"))
+            if (!IsExists("select_phone_code_normal.bmp", "SearchField", out var tuple))
             {
                 return;
             }
 
-            var (x, y, w, h) = Find("select_phone_code_normal.bmp", "SearchField");
+            MoveAndClick(tuple, 0.5, 0.5);
 
-            x += w / 2;
-            y += h / 2;
-            MouseUtilities.MoveAndClick(x, y);
+            Sleep(FieldClickTimeout);
 
-            Paste(Country, 500);
+            Paste(Country);
         }
 
         private void SearchCountryCodeAfterPaste()
         {
-            if (!IsExists("select_phone_code_afterpaste.bmp", "Results"))
+            if (!IsExists("select_phone_code_afterpaste.bmp", "Results", out var tuple))
             {
                 return;
             }
 
-            var (x, y, w, h) = Find("select_phone_code_afterpaste.bmp", "Results");
+            MoveAndClick(tuple, 0.5, 0.5);
 
-            x += w / 2;
-            y += 3 * h / 4;
-            MouseUtilities.MoveAndClick(x, y);
+            Sleep(FieldClickTimeout);
 
-            Sleep(500);
-
-            Paste(Phone, 500);
+            Paste(Phone);
         }
 
         private void AddOk()
         {
-            if (!IsExists("add_by_contacts_beforeok.bmp", "OK"))
+            if (!IsExists("add_by_contacts_beforeok.bmp", "OK", out var tuple))
             {
                 return;
             }
 
-            var (x, y, w, h) = Find("add_by_contacts_beforeok.bmp", "OK");
-            MoveAndClick(x, y, w / 2, h / 2);
-
-            Sleep(1000);
+            MoveAndClick(tuple, 0.5, 0.5);
         }
 
         private void AddedCancel()
         {
-            if (!IsExists("add_by_contacts_success.bmp", "Cancel"))
+            if (!IsExists("add_by_contacts_success.bmp", "Cancel", out var tuple))
             {
                 return;
             }
 
-            var (x, y, w, h) = Find("add_by_contacts_success.bmp", "Cancel");
-            MoveAndClick(x, y, w / 4, h / 2);
+            MoveAndClick(tuple, 0.25, 0.5);
         }
 
         private void AlreadyAdded()
         {
-            if (!IsExists("add_by_contacts_already.bmp", "OK") && !IsExists("add_by_contacts_beforeok.bmp", "OK"))
+            if (!IsExists("add_by_contacts_already.bmp", "OK", out var tuple) && !IsExists("add_by_contacts_beforeok.bmp", "OK", out var _))
             {
                 Action = CurrentAction.Started;
                 return;
             }
 
-            var (x, y, w, h) = Find("add_by_contacts_already.bmp", "OK");
-            MoveAndClick(x, y, w / 2, h / 2);
+            MoveAndClick(tuple, 0.5, 0.5);
 
             Action = CurrentAction.NeedBack;
         }
 
         private void NeedBack()
         {
-            if (!IsExists("add_by_contacts.bmp", "Back"))
+            if (!IsExists("add_by_contacts.bmp", "Back", out var tuple))
             {
                 return;
             }
 
-            var (x, y, w, h) = Find("add_by_contacts.bmp", "Back");
-            MoveAndClick(x, y, w / 2, h / 2);
+            MoveAndClick(tuple, 0.5, 0.5);
         }
 
-        protected override bool OnActionInternal(Mat mat)
+        protected override bool OnActionInternal()
         {
             switch (Action)
             {

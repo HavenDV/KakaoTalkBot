@@ -21,8 +21,11 @@
                 <RowDefinition Height="25"/>
                 <RowDefinition Height="25"/>
                 <RowDefinition Height="25"/>
+                <RowDefinition Height="25"/>
+                <RowDefinition Height="25"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="25"/>
+                <RowDefinition Height="10"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="30*"/>
@@ -35,14 +38,20 @@
             <TextBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" x:Name="MessageTextBox" Text="Hello!"/>
             <Label Grid.Row="2" Grid.Column="0" Content="Country:"/>
             <TextBox Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" x:Name="CountryTextBox" Text="South Korea"/>
-            <Label Grid.Row="3" Grid.Column="0" Content="Timeout:"/>
-            <TextBox Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" x:Name="TimeoutTextBox" Text="500"/>
-            <Button Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Content="Add Number" Click="AddNumberButton_Click"/>
-            <Button Grid.Row="4" Grid.Column="2" Content="Send Message" Click="SendMessageButton_Click"/>
-            <Label Grid.Row="6" Grid.Column="0" Content="Scope:"/>
-            <TextBlock Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="2" x:Name="ScopeTextBlock" Text="?" Foreground="Red"/>
+            <Label Grid.Row="3" Grid.Column="0" Content="BaseTimeout:"/>
+            <TextBox Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" x:Name="BaseTimeoutTextBox" Text="20"/>
+            <Label Grid.Row="4" Grid.Column="0" Content="PasteTimeout:"/>
+            <TextBox Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" x:Name="PasteTimeoutTextBox" Text="100"/>
+            <Label Grid.Row="5" Grid.Column="0" Content="FieldTimeout:"/>
+            <TextBox Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2" x:Name="FieldTimeoutTextBox" Text="50"/>
+            <Button Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" Content="Add Number" Click="AddNumberButton_Click"/>
+            <Button Grid.Row="6" Grid.Column="2" Content="Send Message" Click="SendMessageButton_Click"/>
+            <Label Grid.Row="8" Grid.Column="0" Content="Scope:"/>
+            <TextBox Grid.Row="8" Grid.Column="1" Grid.ColumnSpan="2" x:Name="ScopeTextBlock" Text="?" IsReadOnly="True" Foreground="Red"/>
         </Grid>
-        <TextBox Grid.Row="1" Grid.Column="0" x:Name="LogTextBox" Text="Log:"/>
+        <ScrollViewer Grid.Row="1" Grid.Column="0">
+            <TextBox x:Name="LogTextBox" Text="Log:" Background="Transparent" IsReadOnly="True" TextWrapping="Wrap"/>
+        </ScrollViewer>
         <Grid Grid.Column="1" Grid.Row="0" Grid.RowSpan="2">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>

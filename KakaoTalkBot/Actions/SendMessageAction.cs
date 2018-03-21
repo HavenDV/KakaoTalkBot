@@ -1,6 +1,5 @@
 ﻿using System;
-using Emgu.CV;
-using KakaoTalkBot.Utilities;
+using System.Diagnostics;
 
 namespace KakaoTalkBot.Actions
 {
@@ -9,11 +8,12 @@ namespace KakaoTalkBot.Actions
         public enum CurrentAction
         {
             Started,
-            Search,
             Profile,
             Chat,
             SendMessagePrepare,
             SendMessage,
+            SendMessageAfter,
+            Completed,
             Unknown
         }
 
@@ -25,103 +25,138 @@ namespace KakaoTalkBot.Actions
 
         private void Search()
         {
-            if (!IsExists("search.bmp", "SearchField"))
+            if (!IsExists("search.bmp", "SearchField", out var tuple))
             {
                 return;
             }
 
-            var (x, y, w, h) = Find("search.bmp", "SearchField");
-            x += w / 2;
-            y += h / 2;
+            MoveAndClick(tuple, 0.5, 0.5);
 
-            MouseUtilities.MoveAndClick(x, y);
+            Sleep(FieldClickTimeout);
 
-            Sleep(1000);
+            Paste(Phone);
 
-            Paste(Phone, 500);
-
-            y += 2 * h;
-            MouseUtilities.MoveAndClick(x, y);
+            MoveAndClick(tuple, 0.5, 2.5);
         }
 
         private void Chat()
         {
-            if (!IsExists("profile.bmp", "FreeChat"))
+            if (!IsExists("profile.bmp", "FreeChat", out var tuple))
             {
                 return;
             }
 
-            var (x, y, w, h) = Find("profile.bmp", "FreeChat");
-            MoveAndClick(x, y, w / 2, h / 2);
+            MoveAndClick(tuple, 1.0 / 6, 0.5);
         }
 
-        private void SendMessagePrepare()
+        private bool SendMessagePrepare()
         {
-            if (!IsExists("chat.bmp", "ChatField"))
+            if (!IsExists("chat.bmp", "ChatField", out var tuple))
             {
-                return;
+                return false;
             }
 
-            var (x, y, w, h) = Find("chat.bmp", "ChatField");
-            MoveAndClick(x, y, w / 2, h / 2);
+            MoveAndClick(tuple, 0.5, 0.5);
 
-            Sleep(500);
+            Sleep(FieldClickTimeout);
 
-            Paste(Text, 500);
+            Paste(Text);
+
+            return true;
         }
 
         private void SendMessage()
         {
-            if (!IsExists("chat_beforesend.bmp", "Back"))
+            if (!IsExists("chat_beforesend.bmp", "SendButton", out var tuple))
             {
                 return;
             }
 
-            var (x, y, w, h) = Find("chat_beforesend.bmp", "SendButton");
-            MoveAndClick(x, y, w / 2, h / 2);
+            MoveAndClick(tuple, 0.5, 0.5);
 
-            Sleep(500);
-
-            (x, y, w, h) = Find("chat_beforesend.bmp", "Back");
-            MoveAndClick(x, y, w / 2, h / 2);
         }
 
-        protected override bool OnActionInternal(Mat mat)
+        private bool SendMessageAfterIfMessage()
         {
-            switch (Action)
+            if (!IsExists("char_aftersend_measures.bmp", "OK", out var tuple))
             {
-                case CurrentAction.Started:
-                    Search();
-                    Action = CurrentAction.Profile;
-                    return true;
-
-                case CurrentAction.Profile:
-                    Chat();
-                    Action = CurrentAction.Chat;
-                    return true;
-
-                case CurrentAction.Chat:
-                    SendMessagePrepare();
-                    Action = CurrentAction.SendMessagePrepare;
-                    return true;
-
-                case CurrentAction.SendMessagePrepare:
-                    SendMessage();
-                    Action = CurrentAction.SendMessage;
-                    return true;
-
-                case CurrentAction.SendMessage:
-                    Action = CurrentAction.Started;
-                    IsCompleted = true;
-                    return true;
-
-                case CurrentAction.Unknown:
-                    Log("Unknown window. Stop");
-                    return false;
-
-                default:
-                    throw new ArgumentOutOfRangeException();
+                return false;
             }
+
+            MoveAndClick(tuple, 0.5, 0.5);
+
+            return true;
+        }
+
+        private void SendMessageAfter()
+        {
+            if (!IsExists("chat_beforesend.bmp", "Back", out var tuple))
+            {
+                return;
+            }
+
+            MoveAndClick(tuple, 0.5, 0.5);
+        }
+
+        protected override bool OnActionInternal()
+        {
+            var watch = Stopwatch.StartNew();
+            try
+            {
+
+                switch (Action)
+                {
+                    case CurrentAction.Started:
+                        Search();
+                        Action = CurrentAction.Profile;
+                        return true;
+
+                    case CurrentAction.Profile:
+                        Chat();
+                        Action = CurrentAction.Chat;
+                        return true;
+
+                    case CurrentAction.Chat:
+                        if (!SendMessagePrepare())
+                        {
+                            goto case CurrentAction.SendMessagePrepare;
+                        }
+                        Action = CurrentAction.SendMessagePrepare;
+                        return true;
+
+                    case CurrentAction.SendMessagePrepare:
+                        SendMessage();
+                        Action = CurrentAction.SendMessage;
+                        return true;
+
+                    case CurrentAction.SendMessage:
+                        if (!SendMessageAfterIfMessage())
+                        {
+                            goto case CurrentAction.SendMessageAfter;
+                        }
+                        Action = CurrentAction.SendMessageAfter;
+                        return true;
+
+                    case CurrentAction.SendMessageAfter:
+                        SendMessageAfter();
+                        IsCompleted = true;
+                        Action = CurrentAction.Completed;
+                        return true;
+
+                    case CurrentAction.Unknown:
+                        Log("Unknown window. Stop");
+                        return false;
+
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
+            finally
+            {
+                watch.Stop();
+                //MessageBox.Show($"Test: {watch.ElapsedMilliseconds}");
+            }
+
         }
     }
 }

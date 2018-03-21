@@ -8,8 +8,11 @@ namespace KakaoTalkBot.Actions
         bool IsCompleted { get; set; }
         string CurrentActionName { get; }
         event BaseAction.TextDelegate NewLog;
-        Screens Screens { get; set; }
+        ApplicationInfo Info { get; set; }
 
         bool OnAction(Mat mat);
+
+        int PasteTimeout { get; set; }
+        int FieldClickTimeout { get; set; }
     }
 }

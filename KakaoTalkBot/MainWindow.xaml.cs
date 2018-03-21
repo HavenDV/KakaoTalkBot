@@ -21,7 +21,7 @@ namespace KakaoTalkBot
 
         private static string ProcessName { get; } = "Nox";
 
-        private Screens Screens { get; set; }
+        private ApplicationInfo Info { get; set; } = new ApplicationInfo();
         private Hook Hook { get; } = new Hook("Global Action Hook");
 
         private bool IsStarted { get; set; }
@@ -61,16 +61,20 @@ namespace KakaoTalkBot
             LoadScreens();
         }
 
-        private int Timeout => int.TryParse(TimeoutTextBox.Text, out var result) ? result : 1000;
+        private (int main, int paste, int field) Timeouts => 
+            (
+                int.TryParse(BaseTimeoutTextBox.Text, out var result1) ? result1 : 1000,
+                int.TryParse(PasteTimeoutTextBox.Text, out var result2) ? result2 : 1000,
+                int.TryParse(FieldTimeoutTextBox.Text, out var result3) ? result3 : 1000);
 
         private void AddNumberButton_Click(object sender, RoutedEventArgs e)
         {
-             MultiAction(() => AddFriend(NumberTextBox.Text, NumberTextBox.Text, CountryTextBox.Text, Timeout));
+             MultiAction(() => AddFriend(NumberTextBox.Text, NumberTextBox.Text, CountryTextBox.Text, Timeouts));
         }
 
         private void SendMessageButton_Click(object sender, RoutedEventArgs e)
         {
-            MultiAction(() => SendMessage(NumberTextBox.Text, MessageTextBox.Text, Timeout));
+            MultiAction(() => SendMessage(NumberTextBox.Text, MessageTextBox.Text, Timeouts));
         }
 
         private async void LoadExcelButton_Click(object sender, RoutedEventArgs e)
@@ -128,21 +132,23 @@ namespace KakaoTalkBot
 
         private void LoadScreens() => SafeAction(nameof(LoadScreens), () =>
         {
-            Screens = new Screens("anchors");
+            Info.Load("anchors");
 
-            Log($"Screens count: {Screens.Count}");
+            Log($"Screens count: {Info.Screens.Count}");
         });
 
         #endregion
 
         #region Utilities
 
-        private void Log(string text)
+        private void LogAppend(string text)
         {
-            LogTextBox.Text += Environment.NewLine + text;
+            LogTextBox.Text += text;
             LogTextBox.InvalidateVisual();
             LogTextBox.Refresh();
         }
+
+        private void Log(string text) => LogAppend(Environment.NewLine + text);
 
         private void Log(Exception exception) => Log($"Exception: {exception}");
 
@@ -150,18 +156,20 @@ namespace KakaoTalkBot
         {
             try
             {
-                var dateTime = DateTime.Now;
+                var watch = Stopwatch.StartNew();
 
                 Log($"Action \"{name}\" started...");
 
                 action?.Invoke();
 
-                Log($"Action \"{name}\" completed");
+                watch.Stop();
+                var milliseconds = watch.ElapsedMilliseconds;
 
-                var milliseconds = DateTime.Now.Subtract(dateTime).TotalMilliseconds;
-                const int millisecondsIn12Hours = 12 * 60 * 60 * 1000;
-                var scope = millisecondsIn12Hours / milliseconds;
-                ScopeTextBlock.Text = $"{scope:F0} per 12 hours";
+                Log($"Action \"{name}\" completed. Time: {milliseconds} ms");
+
+                const int millisecondsInHour = 60 * 60 * 1000;
+                var scope = millisecondsInHour / milliseconds;
+                ScopeTextBlock.Text = $"{scope:F0} per hour";
             }
             catch (Exception exception)
             {
@@ -199,16 +207,21 @@ namespace KakaoTalkBot
             }
         }
 
-        private void Action(string name, IAction action, int timeout) => SafeAction(name, () =>
+        private void Action(string name, IAction action, (int main, int paste, int field) timeout) => SafeAction(name, () =>
         {
-            action.Screens = Screens;
+            action.Info = Info;
+            action.PasteTimeout = timeout.paste;
+            action.FieldClickTimeout = timeout.field;
 
-            WindowsUtilities.ShowWindow(ProcessName, 100);
+            //WindowsUtilities.ShowWindow(ProcessName, 100);
 
+            var watch = new Stopwatch();
             var isValid = true;
             while (isValid && !action.IsCompleted && IsStarted)
             {
-                Log($"Current action: {action.CurrentActionName}");
+                watch.Restart();
+                Log($"Current action: {action.CurrentActionName}. Started... ");
+
                 foreach (var (rect, mat) in ScreenshotUtilities.GetScreenshotOfProcess(ProcessName))
                 {
                     MouseUtilities.GlobalOffset = (rect.X, rect.Y);
@@ -218,7 +231,9 @@ namespace KakaoTalkBot
                     }
                 }
 
-                Thread.Sleep(timeout);
+                LogAppend($"Ended. Elapsed ms: {watch.ElapsedMilliseconds}");
+
+                Thread.Sleep(timeout.main);
             }
         });
 
@@ -226,11 +241,11 @@ namespace KakaoTalkBot
 
         #region Actions
 
-        private void SendMessage(string phone, string text, int timeout) =>
-            Action(nameof(SendMessage), new SendMessageAction { Phone = phone, Text = text }, timeout);
+        private void SendMessage(string phone, string text, (int main, int paste, int field) timeouts) =>
+            Action(nameof(SendMessage), new SendMessageAction { Phone = phone, Text = text }, timeouts);
 
-        private void AddFriend(string name, string phone, string country, int timeout) =>
-            Action(nameof(SendMessage), new AddFriendAction { Name = name, Phone = phone, Country = country }, timeout);
+        private void AddFriend(string name, string phone, string country, (int main, int paste, int field) timeouts) =>
+            Action(nameof(SendMessage), new AddFriendAction { Name = name, Phone = phone, Country = country }, timeouts);
 
         #endregion
 
@@ -240,7 +255,7 @@ namespace KakaoTalkBot
 
         public void Dispose()
         {
-            Screens.Dispose();
+            Info.Dispose();
         }
 
         #endregion
