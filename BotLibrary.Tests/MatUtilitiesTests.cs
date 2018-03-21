@@ -10,11 +10,11 @@ using NUnit.Framework;
 namespace BotLibrary.Tests
 {
     [TestFixture]
-    public class TestClass
+    public class MatUtilitiesTests
     {
         #region Properties
 
-        private static Screens Screens { get; } = new Screens(TestUtilities.AnchorsDirectory);
+        private static ApplicationInfo Info { get; } = new ApplicationInfo(TestUtilities.AnchorsDirectory);
         private static Dictionary<string, Mat> Screenshots { get; } = MatUtilities.LoadImages(TestUtilities.ScreenshotsDirectory);
 
         #endregion
@@ -22,7 +22,7 @@ namespace BotLibrary.Tests
         #region Tests
 
         [Test]
-        public void TestMethod()
+        public void IsExistsTest()
         {
             IsExistsBaseTest("add_by_contacts.bmp", "add_by_contacts");
             IsExistsBaseTest("find_subtab.bmp", "find_subtab");
@@ -38,7 +38,7 @@ namespace BotLibrary.Tests
         {
             foreach (var pair in GetImagesWithPrefix(Screenshots, prefix))
             {
-                foreach (var (anchorName, anchor) in Screens.GetAnchors(screenName, pair.Value.Size))
+                foreach (var (anchorName, anchor) in Info.GetAnchors(screenName, pair.Value.Size))
                 {
                     var (rectangle, threshold, isExists) = MatUtilities.Find(pair.Value, anchor);
                     if (!isExists)

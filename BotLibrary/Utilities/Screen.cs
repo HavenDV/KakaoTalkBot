@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using BotLibrary.Extensions;
 using Emgu.CV;
@@ -25,44 +26,31 @@ namespace BotLibrary.Utilities
 
         public List<Anchor> Anchors { get; set; } = new List<Anchor>();
 
-        public (double fx, double fy) GetAnchorKoefs(Anchor anchor, Size size = default(Size))
+        public Rectangle GetAnchorRectangle(Anchor anchor, Offsets offsets, Size size = default(Size))
+        {
+            offsets = offsets ?? new Offsets();
+
+            var result = anchor.Rectangle.TransformForSize(size, Mat.Size, offsets);
+            //File.WriteAllLines("D:/test2.txt", File.ReadAllLines("D:/test2.txt").Concat(new List<string>
+            //{
+            //    $"Rectangle: {anchor.Rectangle}, Size: {size}, BaseSize: {Mat.Size}, Offsets: {offsets}, Result: {result}"
+            //}));
+
+            return result;
+        }
+
+        public Rectangle GetAnchorRectangle(string name, Offsets offsets, Size size = default(Size)) =>
+            GetAnchorRectangle(GetAnchorByName(name), offsets, size);
+
+        public Mat GetAnchorMat(Anchor anchor, Size size = default(Size))
         {
             if (size == Size.Empty)
             {
                 size = Mat.Size;
             }
 
-            var fx = 1.0 * size.Width / Mat.Width;
-            var fy = 1.0 * size.Height / Mat.Height;
-
-            return (fx, fy);
-        }
-
-        private int ToInt(double value) => (int)Math.Round(value);
-
-        public Rectangle GetAnchorRectangle(Anchor anchor, Size size = default(Size))
-        {
-            var (fx, fy) = GetAnchorKoefs(anchor, size);
-            var rect = anchor.Rectangle;
-
-            const int titleHeight = 30;
-            var y = rect.Y - titleHeight;
-
-            var x1 = ToInt(rect.X * fx);
-            var y1 = ToInt(y * fy) + titleHeight;
-            var x2 = ToInt((rect.X + rect.Width) * fx);
-            var y2 = ToInt((y + rect.Height) * fy) + titleHeight;
-
-            return new Rectangle(x1, y1, x2 - x1, y2 - y1);
-        }
-
-        public Rectangle GetAnchorRectangle(string name, Size size = default(Size)) =>
-            GetAnchorRectangle(GetAnchorByName(name), size);
-
-        public Mat GetAnchorMat(Anchor anchor, Size size = default(Size))
-        {
             var anchorMat = new Mat(Mat, anchor.Rectangle);
-            var (fx, fy) = GetAnchorKoefs(anchor, size);
+            var (fx, fy) = size.GetTransformKoefs(Mat.Size);
             var resizedAnchorMat = anchorMat.Resize(Size.Empty, fx, fy, Inter.Area);
 
             return resizedAnchorMat;

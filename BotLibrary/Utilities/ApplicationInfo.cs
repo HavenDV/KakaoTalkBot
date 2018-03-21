@@ -101,7 +101,7 @@ namespace BotLibrary.Utilities
             ?.GetAnchorMat(anchorName, size);
 
         public Rectangle GetAnchorRectangle(string screenName, string anchorName, Size size) => GetScreen(screenName)
-            ?.GetAnchorRectangle(anchorName, size) ?? Rectangle.Empty;
+            ?.GetAnchorRectangle(anchorName, Offsets, size) ?? Rectangle.Empty;
 
         public (string name, Mat mat)[] GetAnchors(string screenName, Size size) => GetScreen(screenName)
             ?.GetAnchors(size);
