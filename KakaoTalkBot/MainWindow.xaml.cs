@@ -33,7 +33,7 @@ namespace KakaoTalkBot
         public MainWindow()
         {
             InitializeComponent();
-
+            LogToFileCheckBox_Checked(this, EventArgs.Empty);
             #region Hook
 
             Hook.KeyUpEvent += Global_KeyUp;
@@ -59,6 +59,27 @@ namespace KakaoTalkBot
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             LoadScreens();
+        }
+
+        private void LogToFileCheckBox_Checked(object sender, EventArgs e)
+        {
+            if (LogScrollViewer == null)
+            {
+                return;
+            }
+            
+            LogScrollViewer.Visibility = LogToFileCheckBox.IsChecked == true ? Visibility.Collapsed : Visibility.Visible;
+        }
+
+        private void OpenLogButton_Click(object sender, RoutedEventArgs e)
+        {
+            var path = Logger.FilePath;
+            if (!File.Exists(path))
+            {
+                return;
+            }
+
+            Process.Start(path);
         }
 
         private (int main, int paste, int field) Timeouts => 
@@ -143,6 +164,12 @@ namespace KakaoTalkBot
 
         private void LogAppend(string text)
         {
+            if (LogToFileCheckBox.IsChecked == true)
+            {
+                Logger.Log.Debug(text);
+                return;
+            }
+
             LogTextBox.Text += text;
             LogTextBox.InvalidateVisual();
             LogTextBox.Refresh();
@@ -207,7 +234,8 @@ namespace KakaoTalkBot
             }
         }
 
-        private void Action(string name, IAction action, (int main, int paste, int field) timeout) => SafeAction(name, () =>
+        private void Action(string name, IAction action, (int main, int paste, int field) timeout) => 
+            SafeAction(name, () =>
         {
             action.Info = Info;
             action.PasteTimeout = timeout.paste;

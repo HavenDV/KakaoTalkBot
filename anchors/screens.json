@@ -32,11 +32,11 @@
       "Anchors": [
         {
           "Name": "OK",
-          "Rectangle": "8, 477, 277, 72"
+          "Rectangle": "79, 383, 238, 35"
         },
         {
           "Name": "Back",
-          "Rectangle": "11, 65, 42, 43"
+          "Rectangle": "5, 53, 37, 38"
         }
       ]
     },
